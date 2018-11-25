@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/item_category"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="15dp"
+    android:layout_marginTop="15dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_category_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ordenar por"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/txt_category_subcategoryname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ordenar por"
+        android:textSize="16sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/holo_green_light"/>
+</LinearLayout>
