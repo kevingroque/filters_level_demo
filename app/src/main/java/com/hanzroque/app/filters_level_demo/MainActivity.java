@@ -3,6 +3,7 @@ package com.hanzroque.app.filters_level_demo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     private List<Category> categoryList,subcategorias;
     private CategoryAdapter mCategoryAdapter;
     private SubcategoriasAdapter mSubCatAdapter;
+    private DividerItemDecoration dividerItemDecoration;
 
     //url de categorias
     private String url_api_categorias = "https://api.mercadolibre.com/sites/MLA/categories";
@@ -84,13 +86,14 @@ public class MainActivity extends AppCompatActivity
 
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        linearLayoutManager.getOrientation();
+        dividerItemDecoration = new DividerItemDecoration(catRaRecyclerView.getContext(), linearLayoutManager.getOrientation());
 
         mCategoryAdapter.mainActivity = this;
         mSubCatAdapter.mainActivity = this;
 
         catRaRecyclerView.setHasFixedSize(true);
         catRaRecyclerView.setLayoutManager(linearLayoutManager);
+        catRaRecyclerView.addItemDecoration(dividerItemDecoration);
         catRaRecyclerView.setAdapter(mCategoryAdapter);
 
         getCategoriesData();
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity
 
     public void RegresarCat(View view){
         catRaRecyclerView.setAdapter(null);
+        subcategorias.clear();
         btnGone.setVisibility(View.VISIBLE);
         btnBack.setVisibility(View.GONE);
         catRaRecyclerView.setAdapter(mCategoryAdapter);

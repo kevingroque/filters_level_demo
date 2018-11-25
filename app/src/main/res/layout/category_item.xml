@@ -12,7 +12,7 @@
         android:id="@+id/txt_category_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ordenar por"
+        android:text="Category name"
         android:textSize="18sp"
         android:textColor="@android:color/black"
         android:maxLines="1"/>
@@ -21,11 +21,6 @@
         android:id="@+id/txt_category_subcategoryname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ordenar por"
+        android:text="Subcategory"
         android:textSize="16sp"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/holo_green_light"/>
 </LinearLayout>
