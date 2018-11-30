@@ -1,6 +1,7 @@
 package com.hanzroque.app.multilevel_filters.adapters;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,13 +67,14 @@ public class SubcategoryAdapter extends BaseAdapter {
 
         if (subcategory.isSelected()){
             holder.ivCheckBox.setBackgroundResource(R.drawable.ic_checked_circle);
+            holder.txtSubcategoryName.setTextColor(Color.RED);
         }else {
             holder.ivCheckBox.setBackgroundResource(R.drawable.ic_check);
+            holder.txtSubcategoryName.setTextColor(Color.BLACK);
         }
 
         return view;
     }
-
 
     public void updateRecords(List<Subcategory> subcategories){
         this.subcategories = subcategories;
