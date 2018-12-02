@@ -11,16 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hanzroque.app.multilevel_filters.models.Category;
-import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.fragments.CategoryFragment;
 import com.hanzroque.app.multilevel_filters.fragments.SubcategoryFragment;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
@@ -56,10 +53,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         holder.setCategoriesName(categoryName);
 
-        String selectedCateries = getSelectedCateries(categoryId);
+        String selectedCategories = getSelectedCategories(categoryId);
 
-        if (selectedCateries != null){
-            holder.setSubcategoriesName(selectedCateries);
+        if (selectedCategories != null){
+            holder.setSubcategoriesName(selectedCategories);
             holder.mSubcategories.setTextColor(Color.RED);
 
         } else {
@@ -90,7 +87,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         });
     }
 
-    private String getSelectedCateries(String categoryId) {
+    private String getSelectedCategories(String categoryId) {
         String text = "";
 
         for (Category category : categoriesList) {

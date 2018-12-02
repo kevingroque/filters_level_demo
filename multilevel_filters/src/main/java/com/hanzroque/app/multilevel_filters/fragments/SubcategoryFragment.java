@@ -46,9 +46,6 @@ import java.util.List;
  */
 public class SubcategoryFragment extends Fragment {
 
-    public static final String ARG_CAT_SELECCIONADA_2 = "CategoriID";
-    public static final String ARG_SUB_CAT_SELECCIONADAS_2 = "Sucategorias Seleccionadas";
-
     private FragmentActivity mContext;
 
     private Subcategory subcategory;
@@ -121,7 +118,7 @@ public class SubcategoryFragment extends Fragment {
         return view;
     }
 
-    public void getSubCategories(String cat_id) {
+    public void getSubCategories(final String cat_id) {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url_api_subcatergories + cat_id, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -142,6 +139,14 @@ public class SubcategoryFragment extends Fragment {
                             e.printStackTrace();
                         }
                         mAdapter.notifyDataSetChanged();
+
+                        for (Category category : MainActivity.INSTANCE.getCategoryList()) {
+                            if (category.getId().compareTo(cat_id) == 0) {
+                                category.setSubcategories(subcategories);
+                                break;
+                            }
+                        }
+
                     }
                 }, new Response.ErrorListener() {
             @Override
