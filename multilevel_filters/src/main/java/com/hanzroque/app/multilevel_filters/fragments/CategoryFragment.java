@@ -4,6 +4,8 @@ package com.hanzroque.app.multilevel_filters.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,21 +15,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
+import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -35,23 +41,43 @@ import java.util.List;
  */
 public class CategoryFragment extends Fragment {
 
-    private String url_api_categorias = "https://api.mercadolibre.com/sites/MLA/categories";
-
-    private String id_category;
 
     private FragmentActivity mContext;
 
-    //Lista CAtegorias Subcategorias
-    private RecyclerView catRaRecyclerView;
+    //Lista Categorias
+    private RecyclerView cateRecyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private List<Category> categoryList,subcategorias;
+    //private List<Category> categoryList;
     private CategoryAdapter mCategoryAdapter;
     private DividerItemDecoration dividerItemDecoration;
+
+
+    public static final String ARG_CATEGORIES = "categories";
+
+    private ArrayList<Category> categoryArrayList;
+
+
 
     public CategoryFragment() {
         // Required empty public constructor
     }
 
+    public static CategoryFragment newInstance(ArrayList<Category> categories) {
+        CategoryFragment fragment = new CategoryFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CATEGORIES, categories);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            categoryArrayList = (ArrayList<Category>) getArguments().getSerializable(ARG_CATEGORIES);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,56 +85,30 @@ public class CategoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_category, container, false);
 
-        catRaRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_categories);
-        categoryList = new ArrayList<>();
-        mCategoryAdapter = new CategoryAdapter(getActivity(),categoryList);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        dividerItemDecoration = new DividerItemDecoration(catRaRecyclerView.getContext(), linearLayoutManager.getOrientation());
-
-        catRaRecyclerView.setHasFixedSize(true);
-        catRaRecyclerView.setLayoutManager(linearLayoutManager);
-        catRaRecyclerView.addItemDecoration(dividerItemDecoration);
-        catRaRecyclerView.setAdapter(mCategoryAdapter);
-
-        getCategoriesData();
-
         return view;
     }
 
-    //Obtener las categorias
-    private void getCategoriesData() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url_api_categorias, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
 
-                        Category cate = new Category();
-                        id_category = jsonObject.getString("id");
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-                        cate.setName(jsonObject.getString("name"));
-                        cate.setId(id_category);
+        cateRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
+        loadDataCategories();
+    }
 
-                        categoryList.add(cate);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+    public void loadDataCategories(){
+        //categoryList = new ArrayList<>();
+        mCategoryAdapter = new CategoryAdapter(getActivity(), categoryArrayList);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        dividerItemDecoration = new DividerItemDecoration(cateRecyclerView.getContext(), linearLayoutManager.getOrientation());
 
-                mCategoryAdapter.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", error.toString());
-            }
-        });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(jsonArrayRequest);
+        cateRecyclerView.setHasFixedSize(true);
+        cateRecyclerView.setLayoutManager(linearLayoutManager);
+        cateRecyclerView.addItemDecoration(dividerItemDecoration);
+        cateRecyclerView.setAdapter(mCategoryAdapter);
     }
 
 

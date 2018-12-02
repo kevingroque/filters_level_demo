@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;

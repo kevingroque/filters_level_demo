@@ -1,9 +1,12 @@
 package com.hanzroque.app.multilevel_filters.fragments;
 
-
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,69 +27,75 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.SubcategoryAdapter;
+import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SubcategoryFragment extends Fragment implements View.OnClickListener {
+public class SubcategoryFragment extends Fragment {
+
+    public static final String ARG_CAT_SELECCIONADA_2 = "CategoriID";
+    public static final String ARG_SUB_CAT_SELECCIONADAS_2 = "Sucategorias Seleccionadas";
 
     private FragmentActivity mContext;
 
-    //Lista Subcategorias
+    private Subcategory subcategory;
 
+    //Listar Subcategorias
     private ListView listView;
-    private List<Subcategory> subcategories;
+    private ArrayList<Subcategory> subcategories;
     private SubcategoryAdapter mAdapter;
 
-    private ImageButton btnGo;
+    private ImageButton btnBack;
     private String categoryID, categoryname;
 
     private TextView txtTitulo;
 
     private String url_api_subcatergories = "https://api.mercadolibre.com/categories/";
 
-
     public SubcategoryFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_subcategory, container, false);
+        View view = inflater.inflate(R.layout.fragment_subcategory, container, false);
+
         Bundle bundle = this.getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             categoryID = bundle.get("categoryID").toString();
             categoryname = bundle.get("categoryName").toString();
         }
 
-        subcategories = new ArrayList<>();
-        mAdapter = new SubcategoryAdapter(getActivity(), subcategories);
         listView = (ListView) view.findViewById(R.id.listview_subcategories);
-        listView.setAdapter(mAdapter);
-        getSubCategories(categoryID);
+        btnBack = (ImageButton) view.findViewById(R.id.btn_back);
+        txtTitulo = (TextView) view.findViewById(R.id.txt_subcategoria_name);
+        txtTitulo.setSelected(true);
+
+        loadData();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Subcategory subcategory = subcategories.get(position);
+                subcategory = subcategories.get(position);
 
-                if (subcategory.isSelected()){
+                if (subcategory.isSelected()) {
                     subcategory.setSelected(false);
-
-                }else {
+                } else {
                     subcategory.setSelected(true);
                 }
 
@@ -95,31 +104,32 @@ public class SubcategoryFragment extends Fragment implements View.OnClickListene
             }
         });
 
-        btnGo = (ImageButton) view.findViewById(R.id.btn_back);
-
-        txtTitulo = (TextView) view.findViewById(R.id.txt_subcategoria_name);
-        txtTitulo.setText(categoryname);
-
-        btnGo.setOnClickListener(new View.OnClickListener() {
+        //Button Back
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoryFragment fragment = new CategoryFragment();
+                CategoryFragment fragment = CategoryFragment.newInstance(MainActivity.INSTANCE.getCategoryList());
                 FragmentManager fragmentManager = mContext.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.layout_container, fragment).addToBackStack(null).commit();
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.layout_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
+
         return view;
     }
 
-    public void getSubCategories(String cat_id){
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url_api_subcatergories+cat_id, null,
+    public void getSubCategories(String cat_id) {
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url_api_subcatergories + cat_id, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         JSONArray jsonArray = null;
                         try {
                             jsonArray = response.getJSONArray("children_categories");
-                            for(int i=0; i<jsonArray.length(); i++){
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                                 Log.d("RESULTADO", jsonObject.getString("name"));
 
@@ -143,10 +153,12 @@ public class SubcategoryFragment extends Fragment implements View.OnClickListene
         requestQueue.add(req);
     }
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void loadData(){
+        subcategories = new ArrayList<>();
+        mAdapter = new SubcategoryAdapter(getActivity(), subcategories);
+        listView.setAdapter(mAdapter);
+        getSubCategories(categoryID);
+        txtTitulo.setText(categoryname);
     }
 
     @Override
@@ -155,8 +167,4 @@ public class SubcategoryFragment extends Fragment implements View.OnClickListene
         super.onAttach(activity);
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 }

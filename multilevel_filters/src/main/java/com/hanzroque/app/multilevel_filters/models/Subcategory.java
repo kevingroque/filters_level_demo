@@ -1,6 +1,8 @@
 package com.hanzroque.app.multilevel_filters.models;
 
-public class Subcategory {
+import java.io.Serializable;
+
+public class Subcategory implements Serializable {
     private String id;
     private String name;
     private boolean selected;
@@ -36,5 +38,14 @@ public class Subcategory {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    @Override
+    public String toString() {
+        return "Subcategory{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", selected=" + selected +
+                '}';
     }
 }
