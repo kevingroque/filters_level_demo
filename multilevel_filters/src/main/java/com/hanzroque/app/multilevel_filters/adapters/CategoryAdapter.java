@@ -50,7 +50,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         final String categoryId = item.getId();
         final String categoryName = item.getName();
 
-
         holder.setCategoriesName(categoryName);
 
         String selectedCategories = getSelectedCategories(categoryId);
@@ -64,7 +63,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             holder.mSubcategories.setTextColor(Color.BLACK);
         }
 
-
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +71,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                 bundle.putString("categoryID", categoryId);
                 bundle.putString("categoryName", categoryName);
 
-                //SubcategoryFragment subcategoryFragment = SubcategoryFragment.newInstance(categoryId, subcategoriesSeleccionadas);
                 SubcategoryFragment subcategoryFragment = new SubcategoryFragment();
                 subcategoryFragment.setArguments(bundle);
 
@@ -137,9 +134,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         }
 
         public void setSubcategoriesName(String subcategories){
-            //mSubcategories = (TextView) mView.findViewById(R.id.txt_category_subcategoryname);
             mSubcategories.setText(subcategories);
-
         }
     }
 }

@@ -41,22 +41,17 @@ import java.util.List;
  */
 public class CategoryFragment extends Fragment {
 
-
     private FragmentActivity mContext;
 
     //Lista Categorias
     private RecyclerView cateRecyclerView;
     private LinearLayoutManager linearLayoutManager;
-    //private List<Category> categoryList;
     private CategoryAdapter mCategoryAdapter;
     private DividerItemDecoration dividerItemDecoration;
-
 
     public static final String ARG_CATEGORIES = "categories";
 
     private ArrayList<Category> categoryArrayList;
-
-
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -83,9 +78,7 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_category, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_category, container, false);
     }
 
 
@@ -99,7 +92,6 @@ public class CategoryFragment extends Fragment {
 
 
     public void loadDataCategories(){
-        //categoryList = new ArrayList<>();
         mCategoryAdapter = new CategoryAdapter(getActivity(), categoryArrayList);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

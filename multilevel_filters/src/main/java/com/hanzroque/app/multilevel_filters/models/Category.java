@@ -1,8 +1,9 @@
 package com.hanzroque.app.multilevel_filters.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Category {
+public class Category implements Serializable {
 
     private String id;
     private String name;

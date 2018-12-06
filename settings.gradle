@@ -1,1 +1,1 @@
-include ':app', ':filtros_fragment', ':multilevel_filters'
+include ':multilevel_filters'

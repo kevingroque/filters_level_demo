@@ -56,9 +56,9 @@ public class SubcategoryFragment extends Fragment {
     private SubcategoryAdapter mAdapter;
 
     private ImageButton btnBack;
-    private String categoryID, categoryname;
-
     private TextView txtTitulo;
+
+    private String categoryID, categoryname;
 
     private String url_api_subcatergories = "https://api.mercadolibre.com/categories/";
 
