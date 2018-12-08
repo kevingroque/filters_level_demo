@@ -14,29 +14,29 @@ import android.widget.TextView;
 
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
-import com.hanzroque.app.multilevel_filters.fragments.CategoryFragment;
 import com.hanzroque.app.multilevel_filters.fragments.SubcategoryFragment;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<Category> categoriesList;
-    private CategoryFragment categoryFragment;
+    private List<Category> mCategoryList;
+    private ArrayList<Subcategory> mSubcategoryArrayList = new ArrayList<>();
 
     public CategoryAdapter(Context mContext,
-                           List<Category> categoriesList) {
+                           List<Category> mCategoryList) {
         this.mContext = mContext;
-        this.categoriesList = categoriesList;
+        this.mCategoryList = mCategoryList;
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
         CategoryAdapter.ViewHolder categoryHolder = new CategoryAdapter.ViewHolder(itemView);
         mContext = parent.getContext();
         return categoryHolder;
@@ -45,14 +45,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int i) {
         holder.setIsRecyclable(false);
-        final Category item = categoriesList.get(i);
+        final Category category = mCategoryList.get(i);
 
-        final String categoryId = item.getId();
-        final String categoryName = item.getName();
+        final String categoryId = category.getId();
+        final String categoryName = category.getName();
 
         holder.setCategoriesName(categoryName);
 
-        String selectedCategories = getSelectedCategories(categoryId);
+        final String selectedCategories = getSelectedCategories(categoryId);
 
         if (selectedCategories != null){
             holder.setSubcategoriesName(selectedCategories);
@@ -66,10 +66,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Bundle bundle = new Bundle();
                 bundle.putString("categoryID", categoryId);
                 bundle.putString("categoryName", categoryName);
+                for (Category category : mCategoryList) {
+                    if (category.getId().compareTo(categoryId) == 0 ) {
+                        if (category.getSubcategories() != null){
+                            mSubcategoryArrayList.addAll(category.getSubcategories());
+                        }
+                        break;
+                    }
+                }
+
+                bundle.putSerializable("mylist", mSubcategoryArrayList);
 
                 SubcategoryFragment subcategoryFragment = new SubcategoryFragment();
                 subcategoryFragment.setArguments(bundle);
@@ -87,7 +96,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     private String getSelectedCategories(String categoryId) {
         String text = "";
 
-        for (Category category : categoriesList) {
+        for (Category category : mCategoryList) {
             if (category.getId().compareTo(categoryId) == 0) {
                 if (category.getSubcategories() != null) {
                     for (Subcategory subcategory : category.getSubcategories()) {
@@ -112,7 +121,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return categoriesList.size();
+        return mCategoryList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

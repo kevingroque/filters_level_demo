@@ -46,21 +46,21 @@ import java.util.List;
  */
 public class SubcategoryFragment extends Fragment {
 
+    private static final String ARG_SUBCATEGORIES = "Subcategorias Seleccionadas";
+    private static final String URL_API_SUBCATEGORIES = "https://api.mercadolibre.com/categories/";
+
     private FragmentActivity mContext;
 
-    private Subcategory subcategory;
-
-    //Listar Subcategorias
-    private ListView listView;
-    private ArrayList<Subcategory> subcategories;
-    private SubcategoryAdapter mAdapter;
+    private Subcategory mSubcategory;
+    private ListView mListView;
+    private ArrayList<Subcategory> mSubcategoryArrayList;
+    private SubcategoryAdapter mSubcategoryAdapter;
 
     private ImageButton btnBack;
-    private TextView txtTitulo;
+    private TextView mTitulo;
 
-    private String categoryID, categoryname;
+    private String mCategoryId, mCategoryname;
 
-    private String url_api_subcatergories = "https://api.mercadolibre.com/categories/";
 
     public SubcategoryFragment() {
         // Required empty public constructor
@@ -74,30 +74,34 @@ public class SubcategoryFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            categoryID = bundle.get("categoryID").toString();
-            categoryname = bundle.get("categoryName").toString();
+            mCategoryId = (String) bundle.get("categoryID");
+            mCategoryname = (String) bundle.get("categoryName");
+            mSubcategoryArrayList = (ArrayList<Subcategory>) bundle.get("mylist");
+            if(mSubcategoryArrayList == null){
+                mSubcategoryArrayList = new ArrayList<>();
+            }
         }
 
-        listView = (ListView) view.findViewById(R.id.listview_subcategories);
+        mListView = (ListView) view.findViewById(R.id.listview_subcategories);
         btnBack = (ImageButton) view.findViewById(R.id.btn_back);
-        txtTitulo = (TextView) view.findViewById(R.id.txt_subcategoria_name);
-        txtTitulo.setSelected(true);
+        mTitulo = (TextView) view.findViewById(R.id.txt_subcategoria_name);
+        mTitulo.setSelected(true);
 
         loadData();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                subcategory = subcategories.get(position);
+                mSubcategory = mSubcategoryArrayList.get(position);
 
-                if (subcategory.isSelected()) {
-                    subcategory.setSelected(false);
+                if (mSubcategory.isSelected()) {
+                    mSubcategory.setSelected(false);
                 } else {
-                    subcategory.setSelected(true);
+                    mSubcategory.setSelected(true);
                 }
 
-                subcategories.set(position, subcategory);
-                mAdapter.updateRecords(subcategories);
+                mSubcategoryArrayList.set(position, mSubcategory);
+                mSubcategoryAdapter.updateRecords(mSubcategoryArrayList);
             }
         });
 
@@ -119,7 +123,7 @@ public class SubcategoryFragment extends Fragment {
     }
 
     public void getSubCategories(final String cat_id) {
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url_api_subcatergories + cat_id, null,
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, URL_API_SUBCATEGORIES + cat_id, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -133,16 +137,16 @@ public class SubcategoryFragment extends Fragment {
                                 Subcategory subcate = new Subcategory();
                                 subcate.setName(jsonObject.getString("name"));
 
-                                subcategories.add(subcate);
+                                mSubcategoryArrayList.add(subcate);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        mAdapter.notifyDataSetChanged();
+                        mSubcategoryAdapter.notifyDataSetChanged();
 
                         for (Category category : MainActivity.INSTANCE.getCategoryList()) {
                             if (category.getId().compareTo(cat_id) == 0) {
-                                category.setSubcategories(subcategories);
+                                category.setSubcategories(mSubcategoryArrayList);
                                 break;
                             }
                         }
@@ -159,11 +163,10 @@ public class SubcategoryFragment extends Fragment {
     }
 
     public void loadData(){
-        subcategories = new ArrayList<>();
-        mAdapter = new SubcategoryAdapter(getActivity(), subcategories);
-        listView.setAdapter(mAdapter);
-        getSubCategories(categoryID);
-        txtTitulo.setText(categoryname);
+        mSubcategoryAdapter = new SubcategoryAdapter(getActivity(), mSubcategoryArrayList);
+        mListView.setAdapter(mSubcategoryAdapter);
+        getSubCategories(mCategoryId);
+        mTitulo.setText(mCategoryname);
     }
 
     @Override

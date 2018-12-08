@@ -50,7 +50,7 @@ public class SubcategoryAdapter extends BaseAdapter {
         ViewHolder holder = null;
 
         if (view == null){
-            view = inflater.inflate(R.layout.subcategory_item,parent, false);
+            view = inflater.inflate(R.layout.item_subcategory,parent, false);
             holder = new ViewHolder();
             holder.txtSubcategoryName = (TextView) view.findViewById(R.id.txt_subcategoria);
             holder.ivCheckBox = (ImageView) view.findViewById(R.id.img_checkbox);

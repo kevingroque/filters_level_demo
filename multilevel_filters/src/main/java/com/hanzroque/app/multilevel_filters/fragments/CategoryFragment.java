@@ -41,17 +41,10 @@ import java.util.List;
  */
 public class CategoryFragment extends Fragment {
 
-    private FragmentActivity mContext;
-
-    //Lista Categorias
-    private RecyclerView cateRecyclerView;
-    private LinearLayoutManager linearLayoutManager;
-    private CategoryAdapter mCategoryAdapter;
-    private DividerItemDecoration dividerItemDecoration;
-
     public static final String ARG_CATEGORIES = "categories";
 
-    private ArrayList<Category> categoryArrayList;
+    private RecyclerView mCategoryRecyclerView;
+    private ArrayList<Category> mCategoryArrayList;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -70,7 +63,7 @@ public class CategoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            categoryArrayList = (ArrayList<Category>) getArguments().getSerializable(ARG_CATEGORIES);
+            mCategoryArrayList = (ArrayList<Category>) getArguments().getSerializable(ARG_CATEGORIES);
         }
     }
 
@@ -86,21 +79,21 @@ public class CategoryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        cateRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
+        mCategoryRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
         loadDataCategories();
     }
 
 
     public void loadDataCategories(){
-        mCategoryAdapter = new CategoryAdapter(getActivity(), categoryArrayList);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        CategoryAdapter categoryAdapter = new CategoryAdapter(getActivity(), mCategoryArrayList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        dividerItemDecoration = new DividerItemDecoration(cateRecyclerView.getContext(), linearLayoutManager.getOrientation());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mCategoryRecyclerView.getContext(), linearLayoutManager.getOrientation());
 
-        cateRecyclerView.setHasFixedSize(true);
-        cateRecyclerView.setLayoutManager(linearLayoutManager);
-        cateRecyclerView.addItemDecoration(dividerItemDecoration);
-        cateRecyclerView.setAdapter(mCategoryAdapter);
+        mCategoryRecyclerView.setHasFixedSize(true);
+        mCategoryRecyclerView.setLayoutManager(linearLayoutManager);
+        mCategoryRecyclerView.addItemDecoration(dividerItemDecoration);
+        mCategoryRecyclerView.setAdapter(categoryAdapter);
     }
 
 
@@ -111,7 +104,7 @@ public class CategoryFragment extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
-        mContext = (FragmentActivity) activity;
+        FragmentActivity fragmentActivity = (FragmentActivity) activity;
         super.onAttach(activity);
     }
 }

@@ -26,10 +26,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
-    private String url_api_categorias = "https://api.mercadolibre.com/sites/MLA/categories";
-    private String id_category;
+    private static final String URL_API_CATEGORIES = "https://api.mercadolibre.com/sites/MLA/categories";
 
-    private ArrayList<Category> categoryList = new ArrayList<>();
+    private String mIdCategory;
+    private ArrayList<Category> mCategoryList = new ArrayList<>();
 
     public static MainActivity INSTANCE;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public ArrayList<Category> getCategoryList() {
-        return categoryList;
+        return mCategoryList;
     }
 
     @Override
@@ -51,12 +51,7 @@ public class MainActivity extends AppCompatActivity{
 
         getCategoriesData();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        CategoryFragment fragment = CategoryFragment.newInstance(categoryList);
+        CategoryFragment fragment = CategoryFragment.newInstance(mCategoryList);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction()
@@ -64,23 +59,22 @@ public class MainActivity extends AppCompatActivity{
                 .commit();
     }
 
-
     //Obtener las categorias
     private void getCategoriesData() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url_api_categorias, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL_API_CATEGORIES, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
-                        Category cate = new Category();
-                        id_category = jsonObject.getString("id");
+                        Category category = new Category();
+                        mIdCategory = jsonObject.getString("id");
 
-                        cate.setName(jsonObject.getString("name"));
-                        cate.setId(id_category);
+                        category.setName(jsonObject.getString("name"));
+                        category.setId(mIdCategory);
 
-                        categoryList.add(cate);
+                        mCategoryList.add(category);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
