@@ -1,38 +1,44 @@
 package com.hanzroque.app.multilevel_filters.adapters;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SubcategoryAdapter extends BaseAdapter {
 
-    Activity activity;
-    List<Subcategory> subcategories;
-    LayoutInflater inflater;
+    private Activity mActivity;
+    private ArrayList<Subcategory> mSubcategories;
+    private LayoutInflater mInflater;
 
     public SubcategoryAdapter(Activity activity) {
-        this.activity = activity;
+        this.mActivity = activity;
     }
 
-    public SubcategoryAdapter(Activity activity, List<Subcategory> subcategories) {
-        this.activity = activity;
-        this.subcategories = subcategories;
-        inflater = activity.getLayoutInflater();
+    public SubcategoryAdapter(Activity activity, ArrayList<Subcategory> subcategories) {
+        this.mActivity = activity;
+        this.mSubcategories = subcategories;
+        mInflater = activity.getLayoutInflater();
     }
 
     @Override
     public int getCount() {
-        return subcategories.size();
+        return mSubcategories.size();
     }
 
     @Override
@@ -50,7 +56,7 @@ public class SubcategoryAdapter extends BaseAdapter {
         ViewHolder holder = null;
 
         if (view == null){
-            view = inflater.inflate(R.layout.item_subcategory,parent, false);
+            view = mInflater.inflate(R.layout.item_subcategory,parent, false);
             holder = new ViewHolder();
             holder.txtSubcategoryName = (TextView) view.findViewById(R.id.txt_subcategoria);
             holder.ivCheckBox = (ImageView) view.findViewById(R.id.img_checkbox);
@@ -60,9 +66,11 @@ public class SubcategoryAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
-        Subcategory subcategory = subcategories.get(position);
+        Subcategory subcategory = mSubcategories.get(position);
 
         holder.txtSubcategoryName.setText(subcategory.getName());
+        holder.txtSubcategoryName.setSelected(true);
+
 
         if (subcategory.isSelected()){
             holder.ivCheckBox.setBackgroundResource(R.drawable.ic_checked_circle);
@@ -75,13 +83,14 @@ public class SubcategoryAdapter extends BaseAdapter {
         return view;
     }
 
-    public void updateRecords(List<Subcategory> subcategories){
-        this.subcategories = subcategories;
-        notifyDataSetChanged();
-    }
-
     class ViewHolder{
         TextView txtSubcategoryName;
         ImageView ivCheckBox;
     }
+
+    public void updateRecords(ArrayList<Subcategory> subcategories){
+        this.mSubcategories = subcategories;
+        notifyDataSetChanged();
+    }
+
 }

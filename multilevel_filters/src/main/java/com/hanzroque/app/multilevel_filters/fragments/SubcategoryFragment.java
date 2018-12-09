@@ -1,25 +1,21 @@
 package com.hanzroque.app.multilevel_filters.fragments;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,9 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,9 +52,9 @@ public class SubcategoryFragment extends Fragment {
 
     private ImageButton btnBack;
     private TextView mTitulo;
+    private Button mBtnDone;
 
     private String mCategoryId, mCategoryname;
-
 
     public SubcategoryFragment() {
         // Required empty public constructor
@@ -84,6 +78,7 @@ public class SubcategoryFragment extends Fragment {
 
         mListView = (ListView) view.findViewById(R.id.listview_subcategories);
         btnBack = (ImageButton) view.findViewById(R.id.btn_back);
+        mBtnDone = (Button) view.findViewById(R.id.btn_subcategory_done);
         mTitulo = (TextView) view.findViewById(R.id.txt_subcategoria_name);
         mTitulo.setSelected(true);
 
@@ -109,17 +104,31 @@ public class SubcategoryFragment extends Fragment {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoryFragment fragment = CategoryFragment.newInstance(MainActivity.INSTANCE.getCategoryList());
-                FragmentManager fragmentManager = mContext.getSupportFragmentManager();
-
-                fragmentManager.beginTransaction()
-                        .replace(R.id.layout_container, fragment)
-                        .addToBackStack(null)
-                        .commit();
+                backDone();
             }
         });
 
+        mBtnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backDone();
+                DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                if (drawer.isDrawerOpen(GravityCompat.END)) {
+                    drawer.closeDrawer(GravityCompat.END);
+                }
+            }
+        });
         return view;
+    }
+
+    private void backDone() {
+        CategoryFragment fragment = CategoryFragment.newInstance(MainActivity.INSTANCE.getCategoryList());
+        FragmentManager fragmentManager = mContext.getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.layout_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public void getSubCategories(final String cat_id) {
@@ -132,12 +141,10 @@ public class SubcategoryFragment extends Fragment {
                             jsonArray = response.getJSONArray("children_categories");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                                Log.d("RESULTADO", jsonObject.getString("name"));
+                                Subcategory subcategory = new Subcategory();
+                                subcategory.setName(jsonObject.getString("name"));
 
-                                Subcategory subcate = new Subcategory();
-                                subcate.setName(jsonObject.getString("name"));
-
-                                mSubcategoryArrayList.add(subcate);
+                                mSubcategoryArrayList.add(subcategory);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -162,7 +169,7 @@ public class SubcategoryFragment extends Fragment {
         requestQueue.add(req);
     }
 
-    public void loadData(){
+    public void loadData() {
         mSubcategoryAdapter = new SubcategoryAdapter(getActivity(), mSubcategoryArrayList);
         mListView.setAdapter(mSubcategoryAdapter);
         getSubCategories(mCategoryId);
@@ -174,5 +181,7 @@ public class SubcategoryFragment extends Fragment {
         mContext = (FragmentActivity) activity;
         super.onAttach(activity);
     }
+
+
 
 }

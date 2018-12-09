@@ -15,7 +15,10 @@
         android:text="Category name"
         android:textSize="18sp"
         android:textColor="@android:color/black"
-        android:maxLines="1"/>
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit ="marquee_forever"/>
 
     <TextView
         android:id="@+id/txt_category_subcategoryname"

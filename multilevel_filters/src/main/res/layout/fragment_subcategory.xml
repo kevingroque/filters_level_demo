@@ -22,8 +22,7 @@
             android:src="@drawable/ic_back"
             android:textColor="#FFF"
             android:background="@null"
-            android:layout_centerVertical="true"
-            android:onClick=""/>
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/txt_subcategoria_name"
@@ -44,7 +43,7 @@
             android:marqueeRepeatLimit ="marquee_forever"/>
 
         <Button
-            android:id="@+id/btn_done"
+            android:id="@+id/btn_subcategory_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
