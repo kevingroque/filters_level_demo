@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity{
 
     private String mIdCategory;
     private ArrayList<Category> mCategoryList = new ArrayList<>();
+    private Category mCategory;
 
     public static MainActivity INSTANCE;
 
@@ -74,13 +75,13 @@ public class MainActivity extends AppCompatActivity{
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
-                        Category category = new Category();
+                        mCategory = new Category();
                         mIdCategory = jsonObject.getString("id");
 
-                        category.setName(jsonObject.getString("name"));
-                        category.setId(mIdCategory);
+                        mCategory.setName(jsonObject.getString("name"));
+                        mCategory.setId(mIdCategory);
 
-                        mCategoryList.add(category);
+                        mCategoryList.add(mCategory);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -108,8 +109,9 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void Clear(View view){
+    public void Clear(CategoryAdapter adapter){
         mCategoryList.clear();
+        adapter.notifyDataSetChanged();
         getCategoriesData();
     }
 }
