@@ -121,8 +121,6 @@ public class SubcategoryFragment extends Fragment {
     }
 
     private void backDone() {
-
-
         CategoryFragment fragment = CategoryFragment.newInstance(MainActivity.INSTANCE.getCategoryList());
         FragmentManager fragmentManager = mContext.getSupportFragmentManager();
 

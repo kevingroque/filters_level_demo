@@ -75,20 +75,11 @@ public class CategoryFragment extends Fragment {
         mClearBtn = getActivity().findViewById(R.id.btn_category_clear);
         loadDataCategories();
 
-        String mCategoryId;
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            mCategoryId = (String) bundle.get("categoryID");
-
-        }
-
 
         mClearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Clear Data
-                //MainActivity.INSTANCE.Clear(mCategoryAdapter);
-
                 for (Category category : mCategoryArrayList) {
                     if (category.getSubcategories() != null) {
                         for (Subcategory subcategory : category.getSubcategories()) {
@@ -96,10 +87,8 @@ public class CategoryFragment extends Fragment {
                                 subcategory.setSelected(false);
                             }
                         }
-                        break;
                     }
                 }
-
                 mCategoryAdapter.notifyDataSetChanged();
             }
         });
