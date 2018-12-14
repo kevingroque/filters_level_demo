@@ -18,6 +18,7 @@ import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
+import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class CategoryFragment extends Fragment {
 
     private RecyclerView mCategoryRecyclerView;
     private ArrayList<Category> mCategoryArrayList;
+    private Category mCategory;
     private CategoryAdapter mCategoryAdapter;
 
     private Button mClearBtn;
@@ -73,11 +75,32 @@ public class CategoryFragment extends Fragment {
         mClearBtn = getActivity().findViewById(R.id.btn_category_clear);
         loadDataCategories();
 
+        String mCategoryId;
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            mCategoryId = (String) bundle.get("categoryID");
+
+        }
+
+
         mClearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Clear Data
-                MainActivity.INSTANCE.Clear(mCategoryAdapter);
+                //MainActivity.INSTANCE.Clear(mCategoryAdapter);
+
+                for (Category category : mCategoryArrayList) {
+                    if (category.getSubcategories() != null) {
+                        for (Subcategory subcategory : category.getSubcategories()) {
+                            if (subcategory.isSelected()) {
+                                subcategory.setSelected(false);
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                mCategoryAdapter.notifyDataSetChanged();
             }
         });
 

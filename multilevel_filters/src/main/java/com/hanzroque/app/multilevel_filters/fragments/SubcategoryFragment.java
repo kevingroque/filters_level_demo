@@ -34,13 +34,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SubcategoryFragment extends Fragment {
 
-    private static final String ARG_SUBCATEGORIES = "Subcategorias Seleccionadas";
     private static final String URL_API_SUBCATEGORIES = "https://api.mercadolibre.com/categories/";
 
     private FragmentActivity mContext;
@@ -94,7 +94,6 @@ public class SubcategoryFragment extends Fragment {
                 } else {
                     mSubcategory.setSelected(true);
                 }
-
                 mSubcategoryArrayList.set(position, mSubcategory);
                 mSubcategoryAdapter.updateRecords(mSubcategoryArrayList);
             }
@@ -122,6 +121,8 @@ public class SubcategoryFragment extends Fragment {
     }
 
     private void backDone() {
+
+
         CategoryFragment fragment = CategoryFragment.newInstance(MainActivity.INSTANCE.getCategoryList());
         FragmentManager fragmentManager = mContext.getSupportFragmentManager();
 
@@ -157,7 +158,6 @@ public class SubcategoryFragment extends Fragment {
                                 break;
                             }
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -165,12 +165,12 @@ public class SubcategoryFragment extends Fragment {
                 Log.d("RESULTADO", "Error: " + error.getMessage());
             }
         });
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
         requestQueue.add(req);
     }
 
     public void loadData() {
-        mSubcategoryAdapter = new SubcategoryAdapter(getActivity(), mSubcategoryArrayList);
+        mSubcategoryAdapter = new SubcategoryAdapter(Objects.requireNonNull(getActivity()), mSubcategoryArrayList);
         mListView.setAdapter(mSubcategoryAdapter);
         getSubCategories(mCategoryId);
         mTitulo.setText(mCategoryname);
@@ -181,7 +181,4 @@ public class SubcategoryFragment extends Fragment {
         mContext = (FragmentActivity) activity;
         super.onAttach(activity);
     }
-
-
-
 }

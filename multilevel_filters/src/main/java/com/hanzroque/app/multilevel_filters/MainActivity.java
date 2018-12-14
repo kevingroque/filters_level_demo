@@ -108,10 +108,4 @@ public class MainActivity extends AppCompatActivity{
             super.onBackPressed();
         }
     }
-
-    public void Clear(CategoryAdapter adapter){
-        mCategoryList.clear();
-        adapter.notifyDataSetChanged();
-        getCategoriesData();
-    }
 }
