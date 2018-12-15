@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,21 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.SubcategoryAdapter;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -40,8 +30,6 @@ import java.util.Objects;
  * A simple {@link Fragment} subclass.
  */
 public class SubcategoryFragment extends Fragment {
-
-    private static final String URL_API_SUBCATEGORIES = "https://api.mercadolibre.com/categories/";
 
     private FragmentActivity mContext;
 
@@ -71,8 +59,10 @@ public class SubcategoryFragment extends Fragment {
             mCategoryId = (String) bundle.get("categoryID");
             mCategoryname = (String) bundle.get("categoryName");
             mSubcategoryArrayList = (ArrayList<Subcategory>) bundle.get("mylist");
-            if(mSubcategoryArrayList == null){
-                mSubcategoryArrayList = new ArrayList<>();
+            if(mSubcategoryArrayList != null){
+                mSubcategoryArrayList.clear();
+                mSubcategoryArrayList = (ArrayList<Subcategory>) CategoryRepository.getSubcategoriesByCategoryId(mCategoryId);
+                //mSubcategoryArrayList = new ArrayList<>();
             }
         }
 
@@ -83,6 +73,13 @@ public class SubcategoryFragment extends Fragment {
         mTitulo.setSelected(true);
 
         loadData();
+
+        for (Category category : MainActivity.INSTANCE.getCategoryList()) {
+            if (category.getId().compareTo(mCategoryId) == 0) {
+                category.setSubcategories(mSubcategoryArrayList);
+                break;
+            }
+        }
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -130,8 +127,9 @@ public class SubcategoryFragment extends Fragment {
                 .commit();
     }
 
-    public void getSubCategories(final String cat_id) {
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, URL_API_SUBCATEGORIES + cat_id, null,
+
+    /*public void getSubCategories(final String catgoryid) {
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, FilterListener.URL_API_SUBCATEGORIES + catgoryid, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -151,7 +149,7 @@ public class SubcategoryFragment extends Fragment {
                         mSubcategoryAdapter.notifyDataSetChanged();
 
                         for (Category category : MainActivity.INSTANCE.getCategoryList()) {
-                            if (category.getId().compareTo(cat_id) == 0) {
+                            if (category.getId().compareTo(catgoryid) == 0) {
                                 category.setSubcategories(mSubcategoryArrayList);
                                 break;
                             }
@@ -165,12 +163,12 @@ public class SubcategoryFragment extends Fragment {
         });
         RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
         requestQueue.add(req);
-    }
+    } */
 
     public void loadData() {
         mSubcategoryAdapter = new SubcategoryAdapter(Objects.requireNonNull(getActivity()), mSubcategoryArrayList);
         mListView.setAdapter(mSubcategoryAdapter);
-        getSubCategories(mCategoryId);
+        //getSubCategories(mCategoryId);
         mTitulo.setText(mCategoryname);
     }
 

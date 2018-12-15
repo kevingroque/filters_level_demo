@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.hanzroque.app.multilevel_filters.MainActivity;
+import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
@@ -55,6 +55,8 @@ public class CategoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mCategoryArrayList = (ArrayList<Category>) getArguments().getSerializable(ARG_CATEGORIES);
+        }else {
+            mCategoryArrayList = (ArrayList<Category>) CategoryRepository.getCategories();
         }
     }
 
@@ -66,36 +68,37 @@ public class CategoryFragment extends Fragment {
 
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         mCategoryRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
         mClearBtn = getActivity().findViewById(R.id.btn_category_clear);
-        loadDataCategories();
 
+        loadDataCategories();
 
         mClearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Clear Data
-                for (Category category : mCategoryArrayList) {
-                    if (category.getSubcategories() != null) {
-                        for (Subcategory subcategory : category.getSubcategories()) {
-                            if (subcategory.isSelected()) {
-                                subcategory.setSelected(false);
-                            }
-                        }
-                    }
-                }
-                mCategoryAdapter.notifyDataSetChanged();
+                cleanFilters();
             }
         });
-
     }
 
-    public void loadDataCategories(){
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        FragmentActivity fragmentActivity = (FragmentActivity) activity;
+        super.onAttach(activity);
+    }
+
+    //Load all categories to listview
+    private void loadDataCategories(){
         mCategoryAdapter = new CategoryAdapter(getActivity(), mCategoryArrayList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -107,16 +110,18 @@ public class CategoryFragment extends Fragment {
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
     }
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        FragmentActivity fragmentActivity = (FragmentActivity) activity;
-        super.onAttach(activity);
+    //Clean filters
+    private void cleanFilters(){
+        for (Category category : mCategoryArrayList) {
+            if (category.getSubcategories() != null) {
+                for (Subcategory subcategory : category.getSubcategories()) {
+                    if (subcategory.isSelected()) {
+                        subcategory.cleanListFilters();
+                    }
+                }
+            }
+        }
+        mCategoryAdapter.notifyDataSetChanged();
     }
 
 }

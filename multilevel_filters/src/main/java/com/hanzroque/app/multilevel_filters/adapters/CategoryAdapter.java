@@ -123,6 +123,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         return mCategoryList.size();
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private View mView;
