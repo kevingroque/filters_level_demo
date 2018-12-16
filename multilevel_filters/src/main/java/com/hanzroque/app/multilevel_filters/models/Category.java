@@ -1,9 +1,12 @@
 package com.hanzroque.app.multilevel_filters.models;
 
+import com.hanzroque.app.multilevel_filters.interfaces.Constants;
+import com.hanzroque.app.multilevel_filters.interfaces.ItemType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Category implements Serializable {
+public class Category implements Serializable , ItemType {
 
     private String id;
     private String name;
@@ -71,5 +74,10 @@ public class Category implements Serializable {
                 ", subcategories=" + subcategories +
                 ", selected=" + selected +
                 '}';
+    }
+
+    @Override
+    public int getViewType() {
+        return Constants.ViewType.NORMAL_TYPE;
     }
 }
