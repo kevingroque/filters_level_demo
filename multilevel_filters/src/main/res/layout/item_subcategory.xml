@@ -19,12 +19,7 @@
         android:text="Subcategoria"
         android:textSize="18sp"
         android:textColor="@android:color/black"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:scrollHorizontally="true"
-        android:ellipsize="marquee"
-        android:marqueeRepeatLimit ="marquee_forever"
-        tools:ignore="EllipsizeMaxLines" />
+        android:maxLines="2"/>
 
     <ImageView
         android:id="@+id/img_checkbox"

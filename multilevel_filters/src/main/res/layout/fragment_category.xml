@@ -23,16 +23,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <Button
-            android:id="@+id/btn_clear_2"
+            android:id="@+id/btn_category_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
             android:text="CLEAR"
             android:textColor="@android:color/holo_blue_light"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:onClick="Clear"
-            tools:ignore="OnClick" />
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_done"
@@ -42,7 +40,7 @@
             android:onClick="Done"
             android:text="DONE"
             android:textColor="@android:color/holo_red_light"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             tools:ignore="OnClick" />
     </LinearLayout>
@@ -67,6 +65,5 @@
         android:text="CLEAR"
         android:textColor="@android:color/holo_blue_dark"
         android:textStyle="bold"
-        android:onClick="Clear"
-        tools:ignore="OnClick" />
+        android:visibility="gone"/>
 </RelativeLayout>

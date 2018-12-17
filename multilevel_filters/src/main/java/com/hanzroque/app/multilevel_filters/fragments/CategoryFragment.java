@@ -1,42 +1,27 @@
 package com.hanzroque.app.multilevel_filters.fragments;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import com.hanzroque.app.multilevel_filters.MainActivity;
+import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +32,10 @@ public class CategoryFragment extends Fragment {
 
     private RecyclerView mCategoryRecyclerView;
     private ArrayList<Category> mCategoryArrayList;
+    private Category mCategory;
+    private CategoryAdapter mCategoryAdapter;
+
+    private Button mClearBtn;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -66,6 +55,8 @@ public class CategoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mCategoryArrayList = (ArrayList<Category>) getArguments().getSerializable(ARG_CATEGORIES);
+        }else {
+            mCategoryArrayList = (ArrayList<Category>) CategoryRepository.getCategories();
         }
     }
 
@@ -77,28 +68,23 @@ public class CategoryFragment extends Fragment {
 
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         mCategoryRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
+        mClearBtn = getActivity().findViewById(R.id.btn_category_clear);
+
         loadDataCategories();
+
+        mClearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Clear Data
+                cleanFilters();
+            }
+        });
     }
-
-
-    public void loadDataCategories(){
-        CategoryAdapter categoryAdapter = new CategoryAdapter(getActivity(), mCategoryArrayList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mCategoryRecyclerView.getContext(), linearLayoutManager.getOrientation());
-
-        mCategoryRecyclerView.setHasFixedSize(true);
-        mCategoryRecyclerView.setLayoutManager(linearLayoutManager);
-        mCategoryRecyclerView.addItemDecoration(dividerItemDecoration);
-        mCategoryRecyclerView.setAdapter(categoryAdapter);
-    }
-
 
     @Override
     public void onAttach(Context context) {
@@ -109,6 +95,33 @@ public class CategoryFragment extends Fragment {
     public void onAttach(Activity activity) {
         FragmentActivity fragmentActivity = (FragmentActivity) activity;
         super.onAttach(activity);
+    }
+
+    //Load all categories to listview
+    private void loadDataCategories(){
+        mCategoryAdapter = new CategoryAdapter(getActivity(), mCategoryArrayList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mCategoryRecyclerView.getContext(), linearLayoutManager.getOrientation());
+
+        mCategoryRecyclerView.setHasFixedSize(true);
+        mCategoryRecyclerView.setLayoutManager(linearLayoutManager);
+        mCategoryRecyclerView.addItemDecoration(dividerItemDecoration);
+        mCategoryRecyclerView.setAdapter(mCategoryAdapter);
+    }
+
+    //Clean filters
+    private void cleanFilters(){
+        for (Category category : mCategoryArrayList) {
+            if (category.getSubcategories() != null) {
+                for (Subcategory subcategory : category.getSubcategories()) {
+                    if (subcategory.isSelected()) {
+                        subcategory.cleanListFilters();
+                    }
+                }
+            }
+        }
+        mCategoryAdapter.notifyDataSetChanged();
     }
 
 }

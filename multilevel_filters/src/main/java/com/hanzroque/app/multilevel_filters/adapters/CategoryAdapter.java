@@ -104,12 +104,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                         }
                     }
                 }
-
                 break;
             }
         }
 
         text = text.trim();
+        text = text.replace(" ", ", ");
 
         if (text.length() == 0) {
             return null;
@@ -122,6 +122,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public int getItemCount() {
         return mCategoryList.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

@@ -69,14 +69,14 @@ public class SubcategoryAdapter extends BaseAdapter {
         Subcategory subcategory = mSubcategories.get(position);
 
         holder.txtSubcategoryName.setText(subcategory.getName());
-        holder.txtSubcategoryName.setSelected(true);
-
 
         if (subcategory.isSelected()){
             holder.ivCheckBox.setBackgroundResource(R.drawable.ic_checked_circle);
             holder.txtSubcategoryName.setTextColor(Color.RED);
+
+
         }else {
-            holder.ivCheckBox.setBackgroundResource(R.drawable.ic_check);
+            holder.ivCheckBox.setBackground(null);
             holder.txtSubcategoryName.setTextColor(Color.BLACK);
         }
 
