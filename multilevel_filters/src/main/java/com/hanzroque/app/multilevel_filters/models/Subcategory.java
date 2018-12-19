@@ -1,10 +1,10 @@
 package com.hanzroque.app.multilevel_filters.models;
 
-import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
+import com.hanzroque.app.multilevel_filters.interfaces.CleanFilterListener;
 
 import java.io.Serializable;
 
-public class Subcategory implements Serializable, FilterListener {
+public class Subcategory implements Serializable, CleanFilterListener {
     private String id;
     private String categoryId;
     private String name;

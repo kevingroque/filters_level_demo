@@ -1,37 +1,25 @@
 package com.hanzroque.app.multilevel_filters.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class SubcategoryAdapter extends BaseAdapter {
 
-    private Activity mActivity;
     private ArrayList<Subcategory> mSubcategories;
     private LayoutInflater mInflater;
 
-    public SubcategoryAdapter(Activity activity) {
-        this.mActivity = activity;
-    }
-
     public SubcategoryAdapter(Activity activity, ArrayList<Subcategory> subcategories) {
-        this.mActivity = activity;
         this.mSubcategories = subcategories;
         mInflater = activity.getLayoutInflater();
     }
@@ -53,13 +41,13 @@ public class SubcategoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder holder = null;
+        ViewHolder holder;
 
         if (view == null){
             view = mInflater.inflate(R.layout.item_subcategory,parent, false);
             holder = new ViewHolder();
-            holder.txtSubcategoryName = (TextView) view.findViewById(R.id.txt_subcategoria);
-            holder.ivCheckBox = (ImageView) view.findViewById(R.id.img_checkbox);
+            holder.txtSubcategoryName = view.findViewById(R.id.txt_subcategoria);
+            holder.ivCheckBox = view.findViewById(R.id.img_checkbox);
 
             view.setTag(holder);
         }else {

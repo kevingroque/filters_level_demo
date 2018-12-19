@@ -13,14 +13,15 @@ public class CategoryRepository {
 
     static {
         mCategories = new ArrayList<>();
-        mCategories.add(new Category("MLA1403","Alimentos y bebidas"));
-        mCategories.add(new Category("MLA1071","Animales y mascotas"));
-        mCategories.add(new Category("MLA1648","Computación"));
-        mCategories.add(new Category("MLA1144","Consolas y videojuegos"));
-        mCategories.add(new Category("MLA1459","Inmuebles"));
-        mCategories.add(new Category("MLA1430","Ropa y Accesorios"));
-        mCategories.add(new Category("MMM0001", "Articulos vendidos", false));
-        mCategories.add(new Category("MMM0001", "Articulos vendidos", false));
+        mCategories.add(new Category("MLA1403","Alimentos y bebidas", false));
+        mCategories.add(new Category("MLA1071","Animales y mascotas", false));
+        mCategories.add(new Category("MLA1648","Computación", false));
+        mCategories.add(new Category("MLA1144","Consolas y videojuegos", false));
+        mCategories.add(new Category("MLA1459","Inmuebles", false));
+        mCategories.add(new Category("MLA1430","Ropa y Accesorios", false));
+        mCategories.add(new Category("MMM0001", "Articulos vendidos", true, false));
+        mCategories.add(new Category("MMM0002", "Articulos vendidos", true, false));
+        mCategories.add(new Category("MMM0003", "Articulos vendidos", true, false));
 
         mSubcategories = new ArrayList<>();
         mSubcategories.add(new Subcategory("MLA417030","MLA1403", "Bebidas alcohólicas preparadas", false));
@@ -55,4 +56,5 @@ public class CategoryRepository {
         }
         return subcategoriesByCategoryId;
     }
+
 }

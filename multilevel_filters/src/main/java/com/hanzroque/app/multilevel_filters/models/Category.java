@@ -1,37 +1,38 @@
 package com.hanzroque.app.multilevel_filters.models;
 
-import com.hanzroque.app.multilevel_filters.interfaces.Constants;
-import com.hanzroque.app.multilevel_filters.interfaces.ItemType;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Category implements Serializable , ItemType {
+public class Category implements Serializable{
 
     private String id;
     private String name;
     private ArrayList<Subcategory> subcategories;
+    private boolean switchExist;
     private boolean selected;
 
     public Category() {
     }
 
-    public Category(String id, String name){
-        this.id = id;
-        this.name = name;
-    }
-
-    public Category(String id, String name, boolean selected){
-        this.id = id;
-        this.name = name;
-        this.selected = selected;
-    }
-
-    public Category(String id, String name, ArrayList<Subcategory> subcategories, boolean selected) {
+    public Category(String id, String name, ArrayList<Subcategory> subcategories, boolean switchExist, boolean selected) {
         this.id = id;
         this.name = name;
         this.subcategories = subcategories;
+        this.switchExist = switchExist;
         this.selected = selected;
+    }
+
+    public Category(String id, String name, boolean switchExist, boolean selected) {
+        this.id = id;
+        this.name = name;
+        this.switchExist = switchExist;
+        this.selected = selected;
+    }
+
+    public Category(String id, String name, boolean switchExist) {
+        this.id = id;
+        this.name = name;
+        this.switchExist = switchExist;
     }
 
     public String getId() {
@@ -58,26 +59,19 @@ public class Category implements Serializable , ItemType {
         this.subcategories = subcategories;
     }
 
+    public boolean isSwitchExist() {
+        return switchExist;
+    }
+
+    public void setSwitchExist(boolean switchExist) {
+        this.switchExist = switchExist;
+    }
+
     public boolean isSelected() {
         return selected;
     }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", subcategories=" + subcategories +
-                ", selected=" + selected +
-                '}';
-    }
-
-    @Override
-    public int getViewType() {
-        return Constants.ViewType.NORMAL_TYPE;
     }
 }
