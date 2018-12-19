@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
 import com.hanzroque.app.multilevel_filters.fragments.CategoryFragment;
 import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
@@ -43,9 +42,10 @@ public class MainActivity extends AppCompatActivity {
         mCategoryList = (ArrayList<Category>) CategoryRepository.getCategories();
         //getCategoriesData();
 
+
+        //Initialize fragment
         CategoryFragment fragment = CategoryFragment.newInstance(mCategoryList);
         FragmentManager fragmentManager = getSupportFragmentManager();
-
         fragmentManager.beginTransaction()
                 .replace(R.id.layout_container, fragment)
                 .commit();

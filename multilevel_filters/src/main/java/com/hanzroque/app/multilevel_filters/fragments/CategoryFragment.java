@@ -99,7 +99,7 @@ public class CategoryFragment extends Fragment {
 
     //Load all categories to listview
     private void loadDataCategories(){
-        mCategoryAdapter = new CategoryAdapter(getActivity(), mCategoryArrayList);
+        mCategoryAdapter = new CategoryAdapter(mCategoryArrayList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mCategoryRecyclerView.getContext(), linearLayoutManager.getOrientation());
