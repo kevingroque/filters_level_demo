@@ -19,12 +19,12 @@ import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
+import com.hanzroque.app.multilevel_filters.models.CategoryFiltered;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
-
-
-import org.json.JSONException;
+import com.hanzroque.app.multilevel_filters.models.SubcategoryFiltered;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,7 +77,7 @@ public class CategoryFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         mCategoryRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
@@ -90,7 +90,47 @@ public class CategoryFragment extends Fragment {
         mDoneFiltersBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filterListener.filtrar();
+
+                List<Category> categoriesSelected = new ArrayList<>();
+                List<Subcategory> subcategoriesSelected = new ArrayList<>();
+
+                for (Category category : mCategoryArrayList) {
+                    if (category.getSubcategories() != null) {
+                        for (Subcategory subcategory : category.getSubcategories()) {
+                            if (subcategory.isSelected()) {
+                                if (!categoriesSelected.contains(category)) {
+                                    categoriesSelected.add(category);
+                                }
+
+                                subcategoriesSelected.add(subcategory);
+                            }
+                        }
+                    }
+                }
+
+                List<CategoryFiltered> categoriesFilteredList = new ArrayList<>();
+                List<SubcategoryFiltered> subcategoriesFilteredList = new ArrayList<>();
+
+                for (Subcategory subcategory : subcategoriesSelected){
+                    SubcategoryFiltered subcategoryFiltered = new SubcategoryFiltered();
+                    subcategoryFiltered.setSubcategoryId(subcategory.getId());
+                    subcategoryFiltered.setSubcategoryName(subcategory.getName());
+                    subcategoryFiltered.setCategoryId(subcategory.getCategoryId());
+
+                    subcategoriesFilteredList.add(subcategoryFiltered);
+                }
+
+                for (Category category : categoriesSelected){
+                    CategoryFiltered categoryFiltered = new CategoryFiltered();
+                    categoryFiltered.setCategoryId(category.getId());
+                    categoryFiltered.setCategoryName(category.getName());
+                    categoryFiltered.setSubcategoriesSelected(subcategoriesFilteredList);
+
+                    categoriesFilteredList.add(categoryFiltered);
+                }
+
+
+                filterListener.filtrar(categoriesFilteredList);
             }
         });
 

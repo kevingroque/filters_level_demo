@@ -11,24 +11,12 @@ public class Category implements Serializable{
     private String name;
     private ArrayList<Subcategory> subcategories;
     private boolean switchExist;
-    private boolean selected;
 
-    public Category(JSONObject jsonObject) {
-    }
-
-    public Category(String id, String name, ArrayList<Subcategory> subcategories, boolean switchExist, boolean selected) {
+    public Category(String id, String name, ArrayList<Subcategory> subcategories, boolean switchExist) {
         this.id = id;
         this.name = name;
         this.subcategories = subcategories;
         this.switchExist = switchExist;
-        this.selected = selected;
-    }
-
-    public Category(String id, String name, boolean switchExist, boolean selected) {
-        this.id = id;
-        this.name = name;
-        this.switchExist = switchExist;
-        this.selected = selected;
     }
 
     public Category(String id, String name, boolean switchExist) {
@@ -36,6 +24,7 @@ public class Category implements Serializable{
         this.name = name;
         this.switchExist = switchExist;
     }
+
 
     public String getId() {
         return id;
@@ -69,11 +58,4 @@ public class Category implements Serializable{
         this.switchExist = switchExist;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
 }

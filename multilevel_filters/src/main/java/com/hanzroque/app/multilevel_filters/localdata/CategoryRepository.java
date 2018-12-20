@@ -19,9 +19,9 @@ public class CategoryRepository {
         mCategories.add(new Category("MLA1144","Consolas y videojuegos", false));
         mCategories.add(new Category("MLA1459","Inmuebles", false));
         mCategories.add(new Category("MLA1430","Ropa y Accesorios", false));
-        mCategories.add(new Category("MMM0001", "Articulos vendidos", true, false));
-        mCategories.add(new Category("MMM0002", "Articulos vendidos", true, false));
-        mCategories.add(new Category("MMM0003", "Articulos vendidos", true, false));
+        mCategories.add(new Category("MMM0001", "Articulos vendidos", true));
+        mCategories.add(new Category("MMM0002", "Articulos vendidos", true));
+        mCategories.add(new Category("MMM0003", "Articulos vendidos", true));
 
         mSubcategories = new ArrayList<>();
         mSubcategories.add(new Subcategory("MLA417030","MLA1403", "Bebidas alcohólicas preparadas", false));

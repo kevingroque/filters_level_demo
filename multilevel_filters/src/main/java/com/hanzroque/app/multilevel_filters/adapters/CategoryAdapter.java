@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -67,12 +68,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int i) {
 
         final Category category = mCategoryList.get(i);
 
         final String categoryId = category.getId();
         final String categoryName = category.getName();
+
+        final boolean stateSwitch = false;
 
         switch (holder.getItemViewType()){
             case NORMAL_VIEW_TYPE:
@@ -128,10 +131,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             case SWITCH_VIEW_TYPE:
             {
-                ViewHolderSwitchType holderSwitchType = (ViewHolderSwitchType) holder;
-                holderSwitchType.setIsRecyclable(false);
+                final ViewHolderSwitchType holderSwitchType = (ViewHolderSwitchType) holder;
+                holderSwitchType.setIsRecyclable(stateSwitch);
                 holderSwitchType.setCategorySwitchName(categoryName);
-                holderSwitchType.mCategorySwitch.setChecked(category.isSelected());
+
+
             }
                 break;
 

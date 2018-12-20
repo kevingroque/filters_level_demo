@@ -7,28 +7,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hanzroque.app.multilevel_filters.fragments.CategoryFragment;
 import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
 import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
-import com.hanzroque.app.multilevel_filters.models.Subcategory;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.hanzroque.app.multilevel_filters.models.CategoryFiltered;
+import com.hanzroque.app.multilevel_filters.models.SubcategoryFiltered;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FilterListener {
 
 
     private String mIdCategory;
     private ArrayList<Category> mCategoryList = new ArrayList<>();
-    private ArrayList<Subcategory> subcategories = new ArrayList<>();
 
     private Category mCategory;
 
@@ -52,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textView = (TextView) findViewById(R.id.txt_main_result) ;
+        textView = (TextView) findViewById(R.id.txt_main_result);
 
         mCategoryList = (ArrayList<Category>) CategoryRepository.getCategories();
         //getCategoriesData();
@@ -101,32 +96,22 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
     } */
 
     @Override
-    public void filtrar() {
+    public void filtrar(List<CategoryFiltered> categoriesFilteredList) {
 
-        for (Category category : mCategoryList) {
-            if (category.getSubcategories() != null) {
-                for (Subcategory subcategory : category.getSubcategories()) {
-                    if (subcategory.isSelected()) {
-                        subcategories.add(subcategory);
-                    }else {
-                        subcategories.remove(subcategory);
-                    }
+        for (CategoryFiltered categoryFiltered : categoriesFilteredList){
+            Log.d("Categories", categoryFiltered.getCategoryName());
+
+            for (SubcategoryFiltered subcategoryFiltered : categoryFiltered.getSubcategoriesSelected()){
+                if (categoryFiltered.getCategoryId().compareTo(subcategoryFiltered.getCategoryId()) == 0){
+                    Log.d("Subcategories", subcategoryFiltered.getSubcategoryName());
                 }
             }
         }
 
-        if (subcategories.size() == 0){
-            textView.setText("No filters");
-        }else {
-            textView.setText(subcategories.toString());
-        }
-
-
-        Log.d("FILTROS S", "Filtros: "+ subcategories);
         closeDrawer();
     }
 
-    public void closeDrawer(){
+    public void closeDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.END)) {
             drawer.closeDrawer(GravityCompat.END);
