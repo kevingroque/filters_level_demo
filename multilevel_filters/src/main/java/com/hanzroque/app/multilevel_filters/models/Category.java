@@ -1,5 +1,7 @@
 package com.hanzroque.app.multilevel_filters.models;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -11,7 +13,7 @@ public class Category implements Serializable{
     private boolean switchExist;
     private boolean selected;
 
-    public Category() {
+    public Category(JSONObject jsonObject) {
     }
 
     public Category(String id, String name, ArrayList<Subcategory> subcategories, boolean switchExist, boolean selected) {

@@ -4,5 +4,6 @@ public interface FilterListener {
     String URL_API_CATEGORIES = "https://api.mercadolibre.com/sites/MLA/categories";
     String URL_API_SUBCATEGORIES = "https://api.mercadolibre.com/categories/";
 
-    void getfilter();
+    public void filtrar() ;
+
 }

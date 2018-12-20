@@ -13,11 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.fragments.SubcategoryFragment;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Category> mCategoryList;
     private ArrayList<Subcategory> mSubcategoryArrayList = new ArrayList<>();
+    private FilterListener filterListener;
+
+    public void setFilterListener(FilterListener filterListener){
+        this.filterListener = filterListener;
+    }
 
     public CategoryAdapter(List<Category> mCategoryList) {
         this.mCategoryList = mCategoryList;
@@ -104,6 +111,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         SubcategoryFragment subcategoryFragment = new SubcategoryFragment();
                         subcategoryFragment.setArguments(bundle);
+
+                        subcategoryFragment.setFilterListener(filterListener);
 
                         AppCompatActivity activity = (AppCompatActivity) v.getContext();
                         activity.getSupportFragmentManager()

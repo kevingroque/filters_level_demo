@@ -66,4 +66,5 @@ public class Subcategory implements Serializable, CleanFilterListener {
     public void cleanListFilters() {
         setSelected(false);
     }
+
 }

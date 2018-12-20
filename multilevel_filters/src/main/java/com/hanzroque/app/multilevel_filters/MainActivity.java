@@ -6,20 +6,33 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hanzroque.app.multilevel_filters.fragments.CategoryFragment;
+import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
 import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
+import com.hanzroque.app.multilevel_filters.models.Subcategory;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FilterListener {
 
 
     private String mIdCategory;
     private ArrayList<Category> mCategoryList = new ArrayList<>();
+    private ArrayList<Subcategory> subcategories = new ArrayList<>();
+
     private Category mCategory;
+
+    private TextView textView;
 
     public static MainActivity INSTANCE;
 
@@ -39,9 +52,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        textView = (TextView) findViewById(R.id.txt_main_result) ;
+
         mCategoryList = (ArrayList<Category>) CategoryRepository.getCategories();
         //getCategoriesData();
-
 
         //Initialize fragment
         CategoryFragment fragment = CategoryFragment.newInstance(mCategoryList);
@@ -49,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.layout_container, fragment)
                 .commit();
+
+        fragment.setFilterListener(this);
     }
 
     //Obtener las categorias
@@ -84,8 +100,33 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     } */
 
-    //Cerrar filtros -----------------------------------------------------------------
-    public void Done(View view){
+    @Override
+    public void filtrar() {
+
+        for (Category category : mCategoryList) {
+            if (category.getSubcategories() != null) {
+                for (Subcategory subcategory : category.getSubcategories()) {
+                    if (subcategory.isSelected()) {
+                        subcategories.add(subcategory);
+                    }else {
+                        subcategories.remove(subcategory);
+                    }
+                }
+            }
+        }
+
+        if (subcategories.size() == 0){
+            textView.setText("No filters");
+        }else {
+            textView.setText(subcategories.toString());
+        }
+
+
+        Log.d("FILTROS S", "Filtros: "+ subcategories);
+        closeDrawer();
+    }
+
+    public void closeDrawer(){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.END)) {
             drawer.closeDrawer(GravityCompat.END);
@@ -93,6 +134,4 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
 }

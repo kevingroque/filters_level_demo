@@ -14,12 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
 import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -34,11 +37,16 @@ public class CategoryFragment extends Fragment {
     private ArrayList<Category> mCategoryArrayList;
     private Category mCategory;
     private CategoryAdapter mCategoryAdapter;
+    private FilterListener filterListener;
 
-    private Button mClearBtn;
+    private Button mClearBtn, mDoneFiltersBtn;
 
     public CategoryFragment() {
         // Required empty public constructor
+    }
+
+    public void setFilterListener(FilterListener listener) {
+        this.filterListener = listener;
     }
 
     public static CategoryFragment newInstance(ArrayList<Category> categories) {
@@ -75,7 +83,16 @@ public class CategoryFragment extends Fragment {
         mCategoryRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
         mClearBtn = getActivity().findViewById(R.id.btn_category_clear);
 
+        mDoneFiltersBtn = getActivity().findViewById(R.id.btn_category_done);
+
         loadDataCategories();
+
+        mDoneFiltersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterListener.filtrar();
+            }
+        });
 
         mClearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +125,8 @@ public class CategoryFragment extends Fragment {
         mCategoryRecyclerView.setLayoutManager(linearLayoutManager);
         mCategoryRecyclerView.addItemDecoration(dividerItemDecoration);
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
+
+        mCategoryAdapter.setFilterListener(filterListener);
     }
 
     //Clean filters

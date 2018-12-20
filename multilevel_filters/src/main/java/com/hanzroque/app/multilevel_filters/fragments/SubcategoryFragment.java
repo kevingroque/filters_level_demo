@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
 import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.R;
@@ -42,7 +43,13 @@ public class SubcategoryFragment extends Fragment {
     private TextView mTitulo;
     private Button mBtnDone;
 
+    private FilterListener filterListener;
+
     private String mCategoryId, mCategoryname;
+
+    public void setFilterListener(FilterListener filterListener){
+        this.filterListener = filterListener;
+    }
 
     public SubcategoryFragment() {
         // Required empty public constructor
@@ -121,6 +128,7 @@ public class SubcategoryFragment extends Fragment {
         CategoryFragment fragment = CategoryFragment.newInstance(MainActivity.INSTANCE.getCategoryList());
         FragmentManager fragmentManager = mContext.getSupportFragmentManager();
 
+        fragment.setFilterListener(filterListener);
         fragmentManager.beginTransaction()
                 .replace(R.id.layout_container, fragment)
                 .addToBackStack(null)
