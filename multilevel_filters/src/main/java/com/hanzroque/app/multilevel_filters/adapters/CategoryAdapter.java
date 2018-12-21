@@ -131,11 +131,22 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             case SWITCH_VIEW_TYPE:
             {
-                final ViewHolderSwitchType holderSwitchType = (ViewHolderSwitchType) holder;
+                ViewHolderSwitchType holderSwitchType = (ViewHolderSwitchType) holder;
                 holderSwitchType.setIsRecyclable(stateSwitch);
                 holderSwitchType.setCategorySwitchName(categoryName);
 
+                holderSwitchType.mCategorySwitch.setChecked(false);
 
+                holderSwitchType.mCategorySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked){
+
+                        }else {
+
+                        }
+                    }
+                });
             }
                 break;
 
