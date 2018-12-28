@@ -101,7 +101,6 @@ public class CategoryFragment extends Fragment {
                                 if (!categoriesSelected.contains(category)) {
                                     categoriesSelected.add(category);
                                 }
-
                                 subcategoriesSelected.add(subcategory);
                             }
                         }

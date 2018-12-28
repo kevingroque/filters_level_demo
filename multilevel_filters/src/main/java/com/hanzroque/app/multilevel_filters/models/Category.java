@@ -25,7 +25,6 @@ public class Category implements Serializable{
         this.switchExist = switchExist;
     }
 
-
     public String getId() {
         return id;
     }
