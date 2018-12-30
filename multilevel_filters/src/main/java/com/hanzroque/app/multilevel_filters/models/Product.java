@@ -2,7 +2,7 @@ package com.hanzroque.app.multilevel_filters.models;
 
 import org.json.JSONArray;
 
-public class Producto {
+public class Product {
     private float productId;
     private String dateProduct;
     private String shop;
@@ -14,10 +14,10 @@ public class Producto {
     private Double priceDifference;
     private JSONArray coverPhoto;
 
-    public Producto() {
+    public Product() {
     }
 
-    public Producto(float productId, String dateProduct, String shop, String titleProduct, String marca, Double lowerPrice, Double previousPrice, Double averagePrice, Double priceDifference, JSONArray coverPhoto) {
+    public Product(float productId, String dateProduct, String shop, String titleProduct, String marca, Double lowerPrice, Double previousPrice, Double averagePrice, Double priceDifference, JSONArray coverPhoto) {
         this.productId = productId;
         this.dateProduct = dateProduct;
         this.shop = shop;

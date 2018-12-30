@@ -75,6 +75,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final String categoryId = category.getId();
         final String categoryName = category.getName();
 
+        String name = null;
+
         final boolean stateSwitch = false;
 
         switch (holder.getItemViewType()){
@@ -82,6 +84,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             {
                 ViewHolderNormalType holderNormalType = (ViewHolderNormalType)holder;
                 holderNormalType.setIsRecyclable(false);
+
+                /*if (categoryName.equals("contador_tiendas")){
+                    name = "Tiendas";
+                }else if (categoryName.equals("contador_marcas")){
+                    name = "Marcas";
+                }else {
+                    name = "Precios";
+                }*/
 
                 holderNormalType.setCategoriesName(categoryName);
 
@@ -109,8 +119,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 break;
                             }
                         }
-
-                        bundle.putSerializable("mylist", mSubcategoryArrayList);
+                        bundle.putSerializable("mySubcategoriesSelected", mSubcategoryArrayList);
 
                         SubcategoryFragment subcategoryFragment = new SubcategoryFragment();
                         subcategoryFragment.setArguments(bundle);

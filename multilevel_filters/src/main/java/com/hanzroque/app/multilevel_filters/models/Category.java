@@ -12,6 +12,8 @@ public class Category implements Serializable{
     private ArrayList<Subcategory> subcategories;
     private boolean switchExist;
 
+    public Category() {}
+
     public Category(String id, String name, ArrayList<Subcategory> subcategories, boolean switchExist) {
         this.id = id;
         this.name = name;

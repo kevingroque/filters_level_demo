@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hanzroque.app.multilevel_filters.R;
-import com.hanzroque.app.multilevel_filters.models.Producto;
+import com.hanzroque.app.multilevel_filters.models.Product;
 
 import org.json.JSONException;
 
@@ -20,9 +20,9 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<Producto> mProductsList;
+    private List<Product> mProductsList;
 
-    public ProductAdapter(Context mContext, List<Producto> mProductsList) {
+    public ProductAdapter(Context mContext, List<Product> mProductsList) {
         this.mContext = mContext;
         this.mProductsList = mProductsList;
     }

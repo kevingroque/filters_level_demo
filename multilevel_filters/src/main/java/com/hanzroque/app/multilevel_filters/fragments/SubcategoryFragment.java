@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +18,27 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
 import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.SubcategoryAdapter;
 import com.hanzroque.app.multilevel_filters.models.Category;
+import com.hanzroque.app.multilevel_filters.models.Product;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -65,11 +79,10 @@ public class SubcategoryFragment extends Fragment {
         if (bundle != null) {
             mCategoryId = (String) bundle.get("categoryID");
             mCategoryname = (String) bundle.get("categoryName");
-            mSubcategoryArrayList = (ArrayList<Subcategory>) bundle.get("mylist");
-            if(mSubcategoryArrayList != null){
+            mSubcategoryArrayList = (ArrayList<Subcategory>) bundle.get("mySubcategoriesSelected");
+            if(mSubcategoryArrayList == null){
                 mSubcategoryArrayList.clear();
-                mSubcategoryArrayList = (ArrayList<Subcategory>) CategoryRepository.getSubcategoriesByCategoryId(mCategoryId);
-                //mSubcategoryArrayList = new ArrayList<>();
+                mSubcategoryArrayList = new ArrayList<>();
             }
         }
 
@@ -124,6 +137,95 @@ public class SubcategoryFragment extends Fragment {
         return view;
     }
 
+
+    private void getSubcategorias(){
+        JSONObject json = new JSONObject();
+        try{
+            json.put("string_search", filterListener.wordToSearch());
+            json.put("num_pag", 1);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST, filterListener.URL_API_PRODUCTS,
+                json, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                JSONArray jsonArrayContadoresFiltros = null;
+
+                try {
+                    if (mCategoryname.compareTo("precios_rango_fijo") != 0) {
+                        jsonArrayContadoresFiltros = response.getJSONObject("contadores_filtros").getJSONArray(mCategoryname);
+                        for (int cont = 0; cont < jsonArrayContadoresFiltros.length(); cont++) {
+                            JSONObject jSubcategories = (JSONObject) jsonArrayContadoresFiltros.get(cont);
+
+                            int doc_count = jSubcategories.getInt("doc_count");
+                            Subcategory subcategory = new Subcategory();
+                            subcategory.setCategoryId(mCategoryId);
+                            subcategory.setName(jSubcategories.getString("key") + " (" + doc_count + ")");
+                            mSubcategoryArrayList.add(subcategory);
+                        }
+                    } else {
+                        JSONArray rangosPrecios = response.getJSONObject("contadores_filtros").getJSONObject("precios_rango_fijo").names();
+
+                        for (int i = 0; i < rangosPrecios.length(); i++) {
+                            String rangoPrecio = rangosPrecios.getString(i);
+
+                            JSONObject jsonRangoPrecio = response.getJSONObject("contadores_filtros").getJSONObject("precios_rango_fijo").getJSONObject(rangoPrecio);
+
+                            int from = jsonRangoPrecio.getInt("from");
+                            int to;
+                            int doc_count = jsonRangoPrecio.getInt("doc_count");
+
+                            if (jsonRangoPrecio.has("to")) {
+                                to = jsonRangoPrecio.getInt("to");
+                            } else {
+                                to = 0;
+                            }
+
+                            String nombreCategoria;
+
+                            if (from == 0) {
+                                nombreCategoria = "Hasta ";
+                            } else {
+                                nombreCategoria = "S/." + from;
+                            }
+
+                            if (to == 0) {
+                                nombreCategoria += " En adelante";
+                            } else {
+                                nombreCategoria += " - S/. " + to;
+                            }
+
+                            nombreCategoria += " (" + doc_count + ")";
+
+                            Log.i("alertahorro", nombreCategoria);
+
+                            Subcategory subcategory = new Subcategory();
+                            subcategory.setCategoryId(mCategoryId);
+                            subcategory.setName(nombreCategoria);
+                            mSubcategoryArrayList.add(subcategory);
+
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                mSubcategoryAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(objectRequest);
+    }
+
     private void backDone() {
         CategoryFragment fragment = CategoryFragment.newInstance(MainActivity.INSTANCE.getCategoryList());
         FragmentManager fragmentManager = mContext.getSupportFragmentManager();
@@ -135,48 +237,10 @@ public class SubcategoryFragment extends Fragment {
                 .commit();
     }
 
-
-    /*public void getSubCategories(final String catgoryid) {
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, FilterListener.URL_API_SUBCATEGORIES + catgoryid, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        JSONArray jsonArray = null;
-                        try {
-                            jsonArray = response.getJSONArray("children_categories");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                                Subcategory subcategory = new Subcategory();
-                                subcategory.setName(jsonObject.getString("name"));
-
-                                mSubcategoryArrayList.add(subcategory);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        mSubcategoryAdapter.notifyDataSetChanged();
-
-                        for (Category category : MainActivity.INSTANCE.getCategoryList()) {
-                            if (category.getId().compareTo(catgoryid) == 0) {
-                                category.setSubcategories(mSubcategoryArrayList);
-                                break;
-                            }
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("RESULTADO", "Error: " + error.getMessage());
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
-        requestQueue.add(req);
-    } */
-
     public void loadData() {
         mSubcategoryAdapter = new SubcategoryAdapter(Objects.requireNonNull(getActivity()), mSubcategoryArrayList);
         mListView.setAdapter(mSubcategoryAdapter);
-        //getSubCategories(mCategoryId);
+        getSubcategorias();
         mTitulo.setText(mCategoryname);
     }
 

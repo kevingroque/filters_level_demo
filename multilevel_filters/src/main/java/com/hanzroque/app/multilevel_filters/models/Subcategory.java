@@ -1,10 +1,8 @@
 package com.hanzroque.app.multilevel_filters.models;
 
-import com.hanzroque.app.multilevel_filters.interfaces.CleanFilterListener;
-
 import java.io.Serializable;
 
-public class Subcategory implements Serializable, CleanFilterListener {
+public class Subcategory implements Serializable {
     private String id;
     private String categoryId;
     private String name;
@@ -60,11 +58,6 @@ public class Subcategory implements Serializable, CleanFilterListener {
                 ", name='" + name + '\'' +
                 ", selected=" + selected +
                 '}';
-    }
-
-    @Override
-    public void cleanListFilters() {
-        setSelected(false);
     }
 
 }

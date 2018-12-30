@@ -64,7 +64,7 @@ public class CategoryFragment extends Fragment {
         if (getArguments() != null) {
             mCategoryArrayList = (ArrayList<Category>) getArguments().getSerializable(ARG_CATEGORIES);
         }else {
-            mCategoryArrayList = (ArrayList<Category>) CategoryRepository.getCategories();
+            mCategoryArrayList = new ArrayList<>();
         }
     }
 
@@ -137,7 +137,6 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //Clear Data
-                cleanFilters();
             }
         });
     }
@@ -168,18 +167,5 @@ public class CategoryFragment extends Fragment {
         mCategoryAdapter.setFilterListener(filterListener);
     }
 
-    //Clean filters
-    private void cleanFilters(){
-        for (Category category : mCategoryArrayList) {
-            if (category.getSubcategories() != null) {
-                for (Subcategory subcategory : category.getSubcategories()) {
-                    if (subcategory.isSelected()) {
-                        subcategory.cleanListFilters();
-                    }
-                }
-            }
-        }
-        mCategoryAdapter.notifyDataSetChanged();
-    }
 
 }

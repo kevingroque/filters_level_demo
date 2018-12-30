@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,15 +20,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.hanzroque.app.multilevel_filters.adapters.ProductAdapter;
 import com.hanzroque.app.multilevel_filters.fragments.CategoryFragment;
 import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
-import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.models.CategoryFiltered;
-import com.hanzroque.app.multilevel_filters.models.Producto;
+import com.hanzroque.app.multilevel_filters.models.Product;
+import com.hanzroque.app.multilevel_filters.models.Subcategory;
 import com.hanzroque.app.multilevel_filters.models.SubcategoryFiltered;
 
 import org.json.JSONArray;
@@ -37,23 +35,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.jar.JarException;
 
 public class MainActivity extends AppCompatActivity implements FilterListener {
 
-
-    private String mIdCategory;
     private ArrayList<Category> mCategoryList = new ArrayList<>();
     private Category mCategory;
 
     private RecyclerView mProductsRecycler;
-    private List<Producto> mProductoList;
+    private List<Product> mProductList;
     private ProductAdapter mProductAdapter;
 
     private EditText mSearchString;
     private ImageButton mSearchBtn;
     private TextView mCounterProducts;
+    private String wordToSearch = null;
 
     private DrawerLayout mDrawer;
 
@@ -79,29 +76,25 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
         mSearchString = (EditText) findViewById(R.id.edt_main_searchString);
         mSearchBtn = (ImageButton) findViewById(R.id.imgbtn_main_search);
         mCounterProducts = (TextView) findViewById(R.id.txt_main_totalproducts);
-
-
-        mCategoryList = (ArrayList<Category>) CategoryRepository.getCategories();
-        //getCategoriesData();
-
-        mProductoList = new ArrayList<>();
         mProductsRecycler = (RecyclerView) findViewById(R.id.rv_main_products);
 
-        mProductAdapter = new ProductAdapter(this, mProductoList);
+        mCategoryList = new ArrayList<>();
+
+        mProductList = new ArrayList<>();
+        mProductAdapter = new ProductAdapter(this, mProductList);
         mProductsRecycler.setHasFixedSize(true);
         mProductsRecycler.setLayoutManager(new GridLayoutManager(this, 2));
         mProductsRecycler.setAdapter(mProductAdapter);
 
-
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProductoList.clear();
+                mProductList.clear();
+                mCategoryList.clear();
                 mProductAdapter.notifyDataSetChanged();
                 getProducts();
             }
         });
-
 
         //Initialize fragment
         CategoryFragment fragment = CategoryFragment.newInstance(mCategoryList);
@@ -113,44 +106,57 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
         fragment.setFilterListener(this);
     }
 
-
     //Obteber productos
     private void getProducts() {
         final JSONObject json = new JSONObject();
+        wordToSearch = mSearchString.getText().toString();
+
         try {
             if (!TextUtils.isEmpty(mSearchString.getText())) {
-                json.put("string_search", mSearchString.getText());
+                json.put("string_search", wordToSearch);
                 json.put("num_pag", 1);
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        String URL_PRODUCTS = FilterListener.URL_API_PRODUCTS;
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                FilterListener.URL_API_PRODUCTS,
+                json, new Response.Listener<JSONObject>() {
 
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_PRODUCTS, json, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                JSONArray jsonArray = null;
+                JSONArray jsonArrayProducts = null;
                 try {
-                    jsonArray = response.getJSONArray("lista_productos");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                        Producto producto = new Producto();
-                        producto.setTitleProduct(jsonObject.getString("titulo"));
-                        producto.setMarca(jsonObject.getString("marca"));
-                        producto.setShop(jsonObject.getString("tienda"));
-                        producto.setCoverPhoto(jsonObject.getJSONArray("foto_portada"));
+                    jsonArrayProducts = response.getJSONArray("lista_productos");
+                    for (int i = 0; i < jsonArrayProducts.length(); i++) {
+                        JSONObject jsonObject = (JSONObject) jsonArrayProducts.get(i);
+                        Product product = new Product();
+                        product.setTitleProduct(jsonObject.getString("titulo"));
+                        product.setMarca(jsonObject.getString("marca"));
+                        product.setShop(jsonObject.getString("tienda"));
+                        product.setCoverPhoto(jsonObject.getJSONArray("foto_portada"));
 
-                        mProductoList.add(producto);
+                        mProductList.add(product);
                     }
+
+                    JSONObject jCategories = response.getJSONObject("contadores_filtros");
+                    for (int c = 0; c < jCategories.length(); c++){
+                        mCategory = new Category();
+                        mCategory.setId("AA00"+c);
+                        mCategory.setName(jCategories.names().get(c).toString());
+                        mCategory.setSwitchExist(false);
+
+                        mCategoryList.add(mCategory);
+                    }
+
+                    mCounterProducts.setText(response.getString("cant") + " productos");
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                mProductAdapter.notifyDataSetChanged();
 
+                mProductAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -162,39 +168,6 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
         requestQueue.add(jsonObjectRequest);
     }
 
-    //Obtener las categorias
-    /*private void getCategoriesData() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(FilterListener.URL_API_CATEGORIES, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
-
-                        mCategory = new Category();
-                        mIdCategory = jsonObject.getString("id");
-
-                        mCategory.setName(jsonObject.getString("name"));
-                        mCategory.setId(mIdCategory);
-
-                        mCategoryList.add(mCategory);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", error.toString());
-            }
-        });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(jsonArrayRequest);
-    } */
-
     @Override
     public void filtrar(List<CategoryFiltered> categoriesFilteredList) {
 
@@ -202,16 +175,15 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
 
         try {
             for (CategoryFiltered categoryFiltered : categoriesFilteredList) {
-                // Log.d("Categories", categoryFiltered.getCategoryName());
-
                 for (SubcategoryFiltered subcategoryFiltered : categoryFiltered.getSubcategoriesSelected()) {
                     if (categoryFiltered.getCategoryId().compareTo(subcategoryFiltered.getCategoryId()) == 0) {
+
                         JSONArray jSubcategories = new JSONArray();
                         jSubcategories.put(subcategoryFiltered.getSubcategoryName());
 
                         JSONObject jCategories = new JSONObject();
                         jCategories.putOpt(categoryFiltered.getCategoryName(), jSubcategories);
-
+                        
                         jArray.put(jCategories);
 
                         //Log.d("Subcategories", subcategoryFiltered.getSubcategoryName());
@@ -221,10 +193,14 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
             }
 
 
-        } catch (JSONException e) {
-        }
+        } catch (JSONException e) { e.printStackTrace();}
 
         closeDrawer();
+    }
+
+    @Override
+    public String wordToSearch() {
+        return wordToSearch;
     }
 
     public void openDrawer(View view) {
