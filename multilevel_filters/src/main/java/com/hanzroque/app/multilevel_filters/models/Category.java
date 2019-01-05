@@ -10,21 +10,21 @@ public class Category implements Serializable{
     private String id;
     private String name;
     private ArrayList<Subcategory> subcategories;
-    private boolean switchExist;
+    private String categoryType;
 
     public Category() {}
 
-    public Category(String id, String name, ArrayList<Subcategory> subcategories, boolean switchExist) {
+    public Category(String id, String name, ArrayList<Subcategory> subcategories, String categoryType) {
         this.id = id;
         this.name = name;
         this.subcategories = subcategories;
-        this.switchExist = switchExist;
+        this.categoryType = categoryType;
     }
 
-    public Category(String id, String name, boolean switchExist) {
+    public Category(String id, String name, String categoryType) {
         this.id = id;
         this.name = name;
-        this.switchExist = switchExist;
+        this.categoryType = categoryType;
     }
 
     public String getId() {
@@ -51,12 +51,11 @@ public class Category implements Serializable{
         this.subcategories = subcategories;
     }
 
-    public boolean isSwitchExist() {
-        return switchExist;
+    public String getCategoryType() {
+        return categoryType;
     }
 
-    public void setSwitchExist(boolean switchExist) {
-        this.switchExist = switchExist;
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
     }
-
 }

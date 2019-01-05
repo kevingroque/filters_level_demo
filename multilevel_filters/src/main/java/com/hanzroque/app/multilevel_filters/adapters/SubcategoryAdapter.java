@@ -56,7 +56,7 @@ public class SubcategoryAdapter extends BaseAdapter {
 
         Subcategory subcategory = mSubcategories.get(position);
 
-        holder.txtSubcategoryName.setText(subcategory.getName());
+        holder.txtSubcategoryName.setText(subcategory.getName() + " (" + subcategory.getDocCount() + ")");
 
         if (subcategory.isSelected()){
             holder.ivCheckBox.setBackgroundResource(R.drawable.ic_checked_circle);
@@ -80,5 +80,8 @@ public class SubcategoryAdapter extends BaseAdapter {
         this.mSubcategories = subcategories;
         notifyDataSetChanged();
     }
+
+
+    //Esto es una prueba
 
 }

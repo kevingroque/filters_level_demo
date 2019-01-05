@@ -43,7 +43,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if (mCategoryList.get(position).isSwitchExist()){
+        if (mCategoryList.get(position).getCategoryType().equals("SWITCH_TYPE")){
             return SWITCH_VIEW_TYPE;
         }else {
             return NORMAL_VIEW_TYPE;
@@ -60,7 +60,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view1 = inflater.inflate(R.layout.item_category, parent,false);
             return new ViewHolderNormalType(view1);
-        }else {
+        }else{
             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
             View view2 = layoutInflater.inflate(R.layout.item_category_switch, parent,false);
             return new ViewHolderSwitchType(view2);
@@ -172,7 +172,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (category.getSubcategories() != null) {
                     for (Subcategory subcategory : category.getSubcategories()) {
                         if (subcategory.isSelected()) {
-                            text.append(subcategory.getName()).append("  ");
+                            text.append(subcategory.getName() + " (" + subcategory.getDocCount() + ")").append("  ");
                         }
                     }
                 }

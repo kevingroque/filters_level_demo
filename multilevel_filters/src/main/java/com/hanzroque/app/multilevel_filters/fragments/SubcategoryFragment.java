@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +24,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
-import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.MainActivity;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.SubcategoryAdapter;
 import com.hanzroque.app.multilevel_filters.models.Category;
-import com.hanzroque.app.multilevel_filters.models.Product;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
 
 import org.json.JSONArray;
@@ -160,13 +157,13 @@ public class SubcategoryFragment extends Fragment {
                         for (int cont = 0; cont < jsonArrayContadoresFiltros.length(); cont++) {
                             JSONObject jSubcategories = (JSONObject) jsonArrayContadoresFiltros.get(cont);
 
-                            int doc_count = jSubcategories.getInt("doc_count");
                             Subcategory subcategory = new Subcategory();
                             subcategory.setCategoryId(mCategoryId);
-                            subcategory.setName(jSubcategories.getString("key") + " (" + doc_count + ")");
+                            subcategory.setName(jSubcategories.getString("key"));
+                            subcategory.setDocCount(jSubcategories.getInt("doc_count"));
                             mSubcategoryArrayList.add(subcategory);
                         }
-                    } else {
+                    }else {
                         JSONArray rangosPrecios = response.getJSONObject("contadores_filtros").getJSONObject("precios_rango_fijo").names();
 
                         for (int i = 0; i < rangosPrecios.length(); i++) {
@@ -187,7 +184,7 @@ public class SubcategoryFragment extends Fragment {
                             String nombreCategoria;
 
                             if (from == 0) {
-                                nombreCategoria = "Hasta ";
+                                nombreCategoria = "S/.0";
                             } else {
                                 nombreCategoria = "S/." + from;
                             }
@@ -198,13 +195,12 @@ public class SubcategoryFragment extends Fragment {
                                 nombreCategoria += " - S/. " + to;
                             }
 
-                            nombreCategoria += " (" + doc_count + ")";
-
                             Log.i("alertahorro", nombreCategoria);
 
                             Subcategory subcategory = new Subcategory();
                             subcategory.setCategoryId(mCategoryId);
                             subcategory.setName(nombreCategoria);
+                            subcategory.setDocCount(doc_count);
                             mSubcategoryArrayList.add(subcategory);
 
                         }

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/item_category"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="15dp"
+    android:layout_marginTop="15dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_categoryorder_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Category name"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit ="marquee_forever"/>
+
+    <RadioGroup
+        android:id="@+id/rg_categoryorder_orderoptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:gravity="center">
+
+        <RadioButton
+            android:id="@+id/rb_orderoptions_relevance"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:background="@drawable/yourbuttonbackground"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Relevancia" />
+
+        <RadioButton
+            android:id="@+id/rb_orderoptions_lowerprice"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:background="@drawable/yourbuttonbackground"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:text="Precio menor" />
+
+        <RadioButton
+            android:id="@+id/rb_orderoptions_higherprice"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:background="@drawable/yourbuttonbackground"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:text="Precio mayor" />
+
+    </RadioGroup>
+
+</LinearLayout>

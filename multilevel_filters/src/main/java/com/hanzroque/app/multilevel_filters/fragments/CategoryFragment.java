@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
-import com.hanzroque.app.multilevel_filters.localdata.CategoryRepository;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
@@ -72,18 +71,12 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_category, container, false);
+        View view = inflater.inflate(R.layout.fragment_category, container, false);
 
-    }
+        mCategoryRecyclerView = view.findViewById(R.id.recyclerview_categories);
+        mClearBtn = view.findViewById(R.id.btn_category_clear);
 
-    @Override
-    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mCategoryRecyclerView = getActivity().findViewById(R.id.recyclerview_categories);
-        mClearBtn = getActivity().findViewById(R.id.btn_category_clear);
-
-        mDoneFiltersBtn = getActivity().findViewById(R.id.btn_category_done);
+        mDoneFiltersBtn = view.findViewById(R.id.btn_category_done);
 
         loadDataCategories();
 
@@ -139,6 +132,16 @@ public class CategoryFragment extends Fragment {
                 //Clear Data
             }
         });
+
+        return view;
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
     }
 
     @Override
@@ -164,6 +167,7 @@ public class CategoryFragment extends Fragment {
         mCategoryRecyclerView.addItemDecoration(dividerItemDecoration);
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
 
+        mCategoryAdapter.notifyDataSetChanged();
         mCategoryAdapter.setFilterListener(filterListener);
     }
 

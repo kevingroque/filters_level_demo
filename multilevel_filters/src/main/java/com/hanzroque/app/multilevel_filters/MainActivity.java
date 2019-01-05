@@ -35,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FilterListener {
@@ -53,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
     private String wordToSearch = null;
 
     private DrawerLayout mDrawer;
+
+    private JSONObject jsonObjectSearch;
+    private JSONObject jsonObjectFilter = new JSONObject();
 
     public static MainActivity INSTANCE;
 
@@ -92,7 +94,21 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
                 mProductList.clear();
                 mCategoryList.clear();
                 mProductAdapter.notifyDataSetChanged();
-                getProducts();
+
+                jsonObjectSearch = new JSONObject();
+                wordToSearch = mSearchString.getText().toString();
+
+                try {
+                    if (!TextUtils.isEmpty(mSearchString.getText())) {
+                        jsonObjectSearch.put("string_search", wordToSearch);
+                        jsonObjectSearch.put("num_pag", 1);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                getProducts(jsonObjectSearch);
+
             }
         });
 
@@ -106,19 +122,40 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
         fragment.setFilterListener(this);
     }
 
-    //Obteber productos
-    private void getProducts() {
-        final JSONObject json = new JSONObject();
-        wordToSearch = mSearchString.getText().toString();
+    @Override
+    public void filtrar(List<CategoryFiltered> categoriesFilteredList) {
+
+        mProductList.clear();
+        mCategoryList.clear();
+        mProductAdapter.notifyDataSetChanged();
+
+        JSONArray jShops = jSonQueryText(categoriesFilteredList, "contador_tiendas" );
+        JSONArray jBrands = jSonQueryText(categoriesFilteredList, "contador_marcas");
 
         try {
-            if (!TextUtils.isEmpty(mSearchString.getText())) {
-                json.put("string_search", wordToSearch);
-                json.put("num_pag", 1);
-            }
+            jsonObjectFilter.put("string_search", wordToSearch);
+            jsonObjectFilter.put("num_pag", 1);
+            jsonObjectFilter.put("orden_busqueda", "precio_menor");
+            jsonObjectFilter.put("precio_minimo", 0);
+            jsonObjectFilter.put("precio_maximo", 5000);
+            if (jShops.length() != 0)
+                jsonObjectFilter.put("tienda", jShops.toString());
+
+            if (jBrands.length() != 0)
+                jsonObjectFilter.put("marca", jBrands.toString());
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        getProducts(jsonObjectFilter);
+
+        closeDrawer();
+    }
+
+    //Obteber productos
+    private void getProducts(JSONObject json) {
 
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                 FilterListener.URL_API_PRODUCTS,
@@ -145,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
                         mCategory = new Category();
                         mCategory.setId("AA00"+c);
                         mCategory.setName(jCategories.names().get(c).toString());
-                        mCategory.setSwitchExist(false);
+                        mCategory.setCategoryType("NORMAL_TYPE");
 
                         mCategoryList.add(mCategory);
                     }
@@ -168,35 +205,23 @@ public class MainActivity extends AppCompatActivity implements FilterListener {
         requestQueue.add(jsonObjectRequest);
     }
 
-    @Override
-    public void filtrar(List<CategoryFiltered> categoriesFilteredList) {
 
-        JSONArray jArray = new JSONArray();
+    private JSONArray jSonQueryText(List<CategoryFiltered> categoriesFiltered, String categoryName){
+        JSONArray jsonArray = new JSONArray();
 
-        try {
-            for (CategoryFiltered categoryFiltered : categoriesFilteredList) {
-                for (SubcategoryFiltered subcategoryFiltered : categoryFiltered.getSubcategoriesSelected()) {
-                    if (categoryFiltered.getCategoryId().compareTo(subcategoryFiltered.getCategoryId()) == 0) {
-
-                        JSONArray jSubcategories = new JSONArray();
-                        jSubcategories.put(subcategoryFiltered.getSubcategoryName());
-
-                        JSONObject jCategories = new JSONObject();
-                        jCategories.putOpt(categoryFiltered.getCategoryName(), jSubcategories);
-                        
-                        jArray.put(jCategories);
-
-                        //Log.d("Subcategories", subcategoryFiltered.getSubcategoryName());
-                        Log.d("CATEGORIES", jArray.toString());
+        for (CategoryFiltered categoryFiltered : categoriesFiltered) {
+            for (SubcategoryFiltered subcategoryFiltered : categoryFiltered.getSubcategoriesSelected()) {
+                if (categoryFiltered.getCategoryId().compareTo(subcategoryFiltered.getCategoryId()) == 0) {
+                    if (categoryFiltered.getCategoryName().equals(categoryName)){
+                        jsonArray.put(subcategoryFiltered.getSubcategoryName());
                     }
                 }
             }
+        }
 
-
-        } catch (JSONException e) { e.printStackTrace();}
-
-        closeDrawer();
+        return jsonArray;
     }
+
 
     @Override
     public String wordToSearch() {

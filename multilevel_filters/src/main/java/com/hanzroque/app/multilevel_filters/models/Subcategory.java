@@ -6,15 +6,17 @@ public class Subcategory implements Serializable {
     private String id;
     private String categoryId;
     private String name;
+    private int docCount;
     private boolean selected;
 
     public Subcategory() {
     }
 
-    public Subcategory(String id, String categoryId,String name, boolean selected) {
+    public Subcategory(String id, String categoryId,String name, int docCount, boolean selected) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
+        this.docCount = docCount;
         this.selected = selected;
     }
 
@@ -42,6 +44,14 @@ public class Subcategory implements Serializable {
         this.name = name;
     }
 
+    public int getDocCount() {
+        return docCount;
+    }
+
+    public void setDocCount(int docCount) {
+        this.docCount = docCount;
+    }
+
     public boolean isSelected() {
         return selected;
     }
@@ -56,8 +66,8 @@ public class Subcategory implements Serializable {
                 "id='" + id + '\'' +
                 ", categoryId='" + categoryId + '\'' +
                 ", name='" + name + '\'' +
+                ", docCount=" + docCount +
                 ", selected=" + selected +
                 '}';
     }
-
 }
