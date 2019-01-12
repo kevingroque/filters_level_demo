@@ -6,18 +6,27 @@ public class Subcategory implements Serializable {
     private String id;
     private String categoryId;
     private String name;
+    private String subcategoryType;
     private int docCount;
     private boolean selected;
 
     public Subcategory() {
     }
 
-    public Subcategory(String id, String categoryId,String name, int docCount, boolean selected) {
+    public Subcategory(String id, String categoryId,String name, String subcategoryType,int docCount, boolean selected) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
+        this.subcategoryType = subcategoryType;
         this.docCount = docCount;
         this.selected = selected;
+    }
+
+    public Subcategory(String id, String categoryId, String name, String subcategoryType) {
+        this.id = id;
+        this.categoryId = categoryId;
+        this.name = name;
+        this.subcategoryType = subcategoryType;
     }
 
     public String getId() {
@@ -44,6 +53,14 @@ public class Subcategory implements Serializable {
         this.name = name;
     }
 
+    public String getSubcategoryType() {
+        return subcategoryType;
+    }
+
+    public void setSubcategoryType(String subcategoryType) {
+        this.subcategoryType = subcategoryType;
+    }
+
     public int getDocCount() {
         return docCount;
     }
@@ -66,6 +83,7 @@ public class Subcategory implements Serializable {
                 "id='" + id + '\'' +
                 ", categoryId='" + categoryId + '\'' +
                 ", name='" + name + '\'' +
+                ", subcategoryType='" + subcategoryType + '\'' +
                 ", docCount=" + docCount +
                 ", selected=" + selected +
                 '}';

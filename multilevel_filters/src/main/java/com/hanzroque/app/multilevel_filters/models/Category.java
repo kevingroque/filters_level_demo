@@ -4,21 +4,28 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Category implements Serializable{
 
     private String id;
     private String name;
-    private ArrayList<Subcategory> subcategories;
+    private List<Subcategory> subcategories;
     private String categoryType;
 
     public Category() {}
 
-    public Category(String id, String name, ArrayList<Subcategory> subcategories, String categoryType) {
+    public Category(String id, String name, List<Subcategory> subcategories, String categoryType) {
         this.id = id;
         this.name = name;
         this.subcategories = subcategories;
         this.categoryType = categoryType;
+    }
+
+    public Category(String id, String name, ArrayList<Subcategory> subcategories) {
+        this.id = id;
+        this.name = name;
+        this.subcategories = subcategories;
     }
 
     public Category(String id, String name, String categoryType) {
@@ -43,11 +50,11 @@ public class Category implements Serializable{
         this.name = name;
     }
 
-    public ArrayList<Subcategory> getSubcategories() {
+    public List<Subcategory> getSubcategories() {
         return subcategories;
     }
 
-    public void setSubcategories(ArrayList<Subcategory> subcategories) {
+    public void setSubcategories(List<Subcategory> subcategories) {
         this.subcategories = subcategories;
     }
 

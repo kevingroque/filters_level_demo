@@ -18,9 +18,7 @@ import com.hanzroque.app.multilevel_filters.interfaces.FilterListener;
 import com.hanzroque.app.multilevel_filters.models.Category;
 import com.hanzroque.app.multilevel_filters.R;
 import com.hanzroque.app.multilevel_filters.adapters.CategoryAdapter;
-import com.hanzroque.app.multilevel_filters.models.CategoryFiltered;
 import com.hanzroque.app.multilevel_filters.models.Subcategory;
-import com.hanzroque.app.multilevel_filters.models.SubcategoryFiltered;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +32,11 @@ public class CategoryFragment extends Fragment {
 
     private RecyclerView mCategoryRecyclerView;
     private ArrayList<Category> mCategoryArrayList;
-    private Category mCategory;
     private CategoryAdapter mCategoryAdapter;
     private FilterListener filterListener;
+
+    List<Category> categoriesFilteredList = new ArrayList<>();
+    List<Subcategory> subcategoriesFilteredList = new ArrayList<>();
 
     private Button mClearBtn, mDoneFiltersBtn;
 
@@ -100,27 +100,24 @@ public class CategoryFragment extends Fragment {
                     }
                 }
 
-                List<CategoryFiltered> categoriesFilteredList = new ArrayList<>();
-                List<SubcategoryFiltered> subcategoriesFilteredList = new ArrayList<>();
-
                 for (Subcategory subcategory : subcategoriesSelected){
-                    SubcategoryFiltered subcategoryFiltered = new SubcategoryFiltered();
-                    subcategoryFiltered.setSubcategoryId(subcategory.getId());
-                    subcategoryFiltered.setSubcategoryName(subcategory.getName());
+                    Subcategory subcategoryFiltered = new Subcategory();
+                    subcategoryFiltered.setId(subcategory.getId());
+                    subcategoryFiltered.setName(subcategory.getName());
                     subcategoryFiltered.setCategoryId(subcategory.getCategoryId());
+                    subcategoryFiltered.setSelected(subcategory.isSelected());
 
                     subcategoriesFilteredList.add(subcategoryFiltered);
                 }
 
                 for (Category category : categoriesSelected){
-                    CategoryFiltered categoryFiltered = new CategoryFiltered();
-                    categoryFiltered.setCategoryId(category.getId());
-                    categoryFiltered.setCategoryName(category.getName());
-                    categoryFiltered.setSubcategoriesSelected(subcategoriesFilteredList);
+                    Category categoryFiltered = new Category();
+                    categoryFiltered.setId(category.getId());
+                    categoryFiltered.setName(category.getName());
+                    categoryFiltered.setSubcategories(subcategoriesFilteredList);
 
                     categoriesFilteredList.add(categoryFiltered);
                 }
-
 
                 filterListener.filtrar(categoriesFilteredList);
             }
@@ -129,31 +126,19 @@ public class CategoryFragment extends Fragment {
         mClearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Clear Data
+                filterListener.cleanFilters();
+                mCategoryAdapter.notifyDataSetChanged();
             }
         });
 
         return view;
-
     }
 
     @Override
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        FragmentActivity fragmentActivity = (FragmentActivity) activity;
-        super.onAttach(activity);
-    }
 
     //Load all categories to listview
     private void loadDataCategories(){
@@ -170,6 +155,4 @@ public class CategoryFragment extends Fragment {
         mCategoryAdapter.notifyDataSetChanged();
         mCategoryAdapter.setFilterListener(filterListener);
     }
-
-
 }

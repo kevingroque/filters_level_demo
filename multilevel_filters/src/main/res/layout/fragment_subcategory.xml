@@ -44,17 +44,16 @@
 
         <Button
             android:id="@+id/btn_subcategory_done"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:background="@null"
             android:text="DONE"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@android:color/holo_red_light"/>
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="13sp"
+            android:textStyle="bold"/>
 
     </RelativeLayout>
-
 
     <ListView
         android:layout_below="@+id/btn_back"

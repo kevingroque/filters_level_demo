@@ -43,6 +43,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         String title = mProductsList.get(i).getTitleProduct();
         String marca = mProductsList.get(i).getMarca();
         String shop = mProductsList.get(i).getShop();
+        Double lowerPrice = mProductsList.get(i).getLowerPrice();
+        Double previousPrice = mProductsList.get(i).getPreviousPrice();
         String imageUrl = null;
         try {
             imageUrl = (String) mProductsList.get(i).getCoverPhoto().get(0);
@@ -50,7 +52,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             e.printStackTrace();
         }
 
-        holder.setData(title,marca,shop, imageUrl);
+        holder.setData(title,marca,shop, lowerPrice, previousPrice,imageUrl);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private View mView;
-        private TextView mTitle, mMarca;
+        private TextView mTitle, mMarca, mPrices;
         private ImageView mImage;
 
         public ViewHolder(@NonNull View itemView) {
@@ -69,12 +71,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             mView = itemView;
             mTitle = mView.findViewById(R.id.txt_itemProduct_title);
             mMarca = mView.findViewById(R.id.txt_itemProduct_marca);
+            mPrices = mView.findViewById(R.id.txt_itemProduct_price);
             mImage = mView.findViewById(R.id.img_itemproduct_image);
         }
 
-        private void setData(String title, String marca, String shop, String urlImage){
+        private void setData(String title, String marca, String shop, Double lowerPrice, Double previousPrice , String urlImage){
             mTitle.setText(title);
             mMarca.setText(marca + " en " + shop);
+            mPrices.setText(String.valueOf(lowerPrice) + " - " + String.valueOf(previousPrice));
             Glide.with(mContext).load(urlImage).into(mImage);
         }
     }

@@ -59,14 +59,13 @@ public class SubcategoryAdapter extends BaseAdapter {
         holder.txtSubcategoryName.setText(subcategory.getName() + " (" + subcategory.getDocCount() + ")");
 
         if (subcategory.isSelected()){
-            holder.ivCheckBox.setBackgroundResource(R.drawable.ic_checked_circle);
+            holder.ivCheckBox.setBackgroundResource(R.drawable.ic_checked);
             holder.txtSubcategoryName.setTextColor(Color.RED);
-
-
         }else {
             holder.ivCheckBox.setBackground(null);
             holder.txtSubcategoryName.setTextColor(Color.BLACK);
         }
+
 
         return view;
     }
@@ -80,7 +79,6 @@ public class SubcategoryAdapter extends BaseAdapter {
         this.mSubcategories = subcategories;
         notifyDataSetChanged();
     }
-
 
     //Esto es una prueba
 
